@@ -1,0 +1,12 @@
+name: ruglider_processing
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python==3.13.3
+  - netcdf4==1.7.2
+  - numpy==2.2.5
+  - pandas==2.2.3
+  - xarray==2025.4.0
+  - gsw==3.6.19
+  - pyglider==0.0.7
