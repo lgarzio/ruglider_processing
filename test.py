@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 5/14/2025
+Last modified: lgarzio on 5/16/2025
 Testing pyglider
 """
 
@@ -87,8 +87,18 @@ def main(deployments, mode, loglevel, test):
             
             logging.info(f'Processing: {deployment}')
 
-            slocum.binary_to_rawnc(binarydir, outdir, cacdir, sensorlist, deploymentyaml, incremental=True, scisuffix=scisuffix, glidersuffix=glidersuffix)
+            # convert binary *.EBD and *.DBD into *.ebd.nc and *.dbd.nc netcdf files.
+            raw_outdir = os.path.join(outdir, 'raw')
+            slocum.binary_to_rawnc(binarydir, raw_outdir, cacdir, sensorlist, deploymentyaml, incremental=True, scisuffix=scisuffix, glidersuffix=glidersuffix)
 
+            # this combines all dbds into one file, same with ebds - not sure if I like this part
+            slocum.merge_rawnc(raw_outdir, raw_outdir, deploymentyaml, scisuffix=scisuffix, glidersuffix=glidersuffix)
+
+            # make level-1 timeseries netcdf file from the merged raw files
+            ts_dir = os.path.join(outdir, 'timeseries')
+            outname = slocum.raw_to_timeseries(raw_outdir, ts_dir, deploymentyaml, profile_filt_time=100, profile_min_time=300)
+
+            print('done')
             
         return status
 
