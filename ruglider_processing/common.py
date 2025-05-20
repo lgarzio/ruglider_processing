@@ -58,35 +58,46 @@ def find_glider_deployment_datapath(logger, deployment, deployments_root, mode):
                 if os.path.isdir(deployment_location):
                     # Set the deployment binary data path
                     data_path = os.path.join(deployment_location, 'data', 'in', 'binary', modemap)
-                    nc_outpath = os.path.join(deployment_location, 'data', 'out', mode)
+                    
+                    # Set the deployment raw netcdf data path
+                    nc_outpath = os.path.join(deployment_location, 'data', 'in', 'rawnc', modemap)
+
+                    # Set the deployment output file directory
+                    outdir = os.path.join(deployment_location, 'data', 'out', mode)
+                    
                     if not os.path.isdir(data_path):
                         logger.warning(f'{trajectory} data directory not found: {data_path}')
                         data_path = None
                         nc_outpath = None
                         deployment_location = None
+                        outdir = None
                     if not os.path.isdir(nc_outpath):
                         logger.warning(f'{trajectory} data directory not found: {nc_outpath}')
                         data_path = None
                         nc_outpath = None
                         deployment_location = None
+                        outdir = None
                 else:
                     logger.warning(f'Deployment location does not exist: {deployment_location}')
                     data_path = None
                     nc_outpath = None
                     deployment_location = None
+                    outdir = None
 
         except ValueError as e:
             logger.error(f'Error parsing invalid deployment name {deployment}: {e}')
             data_path = None
             nc_outpath = None
             deployment_location = None
+            outdir = None
     else:
         logger.error(f'Cannot pull glider name from {deployment}')
         data_path = None
         nc_outpath = None
         deployment_location = None
+        outdir = None
 
-    return data_path, nc_outpath, deployment_location
+    return data_path, nc_outpath, outdir, deployment_location
 
 
 def find_glider_deployments_rootdir(logger, test):
