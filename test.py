@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 5/16/2025
+Last modified: lgarzio on 5/20/2025
 Testing pyglider
 """
 
@@ -45,7 +45,7 @@ def main(deployments, mode, loglevel, test):
         for deployment in [deployments]:
 
             # find the deployment binary data filepath
-            binarydir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, mode)
+            binarydir, rawncdir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, mode)
 
             if not binarydir:
                 logging_base.error(f'{deployment} binary file data directory not found')
@@ -88,15 +88,27 @@ def main(deployments, mode, loglevel, test):
             logging.info(f'Processing: {deployment}')
 
             # convert binary *.EBD and *.DBD into *.ebd.nc and *.dbd.nc netcdf files.
-            raw_outdir = os.path.join(outdir, 'raw')
-            slocum.binary_to_rawnc(binarydir, raw_outdir, cacdir, sensorlist, deploymentyaml, incremental=True, scisuffix=scisuffix, glidersuffix=glidersuffix)
+            #raw_outdir = os.path.join(outdir, 'raw')
+            slocum.binary_to_rawnc(binarydir, rawncdir, cacdir, sensorlist, deploymentyaml, incremental=True, scisuffix=scisuffix, glidersuffix=glidersuffix)
 
             # this combines all dbds into one file, same with ebds - not sure if I like this part
-            slocum.merge_rawnc(raw_outdir, raw_outdir, deploymentyaml, scisuffix=scisuffix, glidersuffix=glidersuffix)
+            # slocum.merge_rawnc(raw_outdir, raw_outdir, deploymentyaml, scisuffix=scisuffix, glidersuffix=glidersuffix)
 
             # make level-1 timeseries netcdf file from the merged raw files
-            ts_dir = os.path.join(outdir, 'timeseries')
-            outname = slocum.raw_to_timeseries(raw_outdir, ts_dir, deploymentyaml, profile_filt_time=100, profile_min_time=300)
+            # ts_dir = os.path.join(outdir, 'timeseries')
+            # outname = slocum.raw_to_timeseries(raw_outdir, ts_dir, deploymentyaml, profile_filt_time=100, profile_min_time=300)
+            
+            # make level-1 timeseries netcdf file from each debd.nc pair - modified by Lori
+            files = glob.glob(os.path.join(rawncdir, '*.nc'))
+            trajectory_list = []
+            for file in files:
+                trajectory = os.path.basename(file).split('.')[0]
+                if trajectory not in trajectory_list:
+                    trajectory_list.append(trajectory)
+            
+            for traj in sorted(trajectory_list):
+                outname = slocum.raw_trajectory_to_timeseries(rawncdir, outdir, deploymentyaml, profile_filt_time=30, 
+                                                            profile_min_time=300, trajectory=traj)
 
             print('done')
             
