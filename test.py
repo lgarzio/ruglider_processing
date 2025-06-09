@@ -85,13 +85,15 @@ def main(deployments, mode, loglevel, test):
                 status = 1
                 continue
             
-            logging.info(f'Processing: {deployment}')
+            logging.info(f'Processing: {deployment} {mode}')
 
-            # convert binary *.EBD and *.DBD into *.ebd.nc and *.dbd.nc netcdf files.
-            #raw_outdir = os.path.join(outdir, 'raw')
-            slocum.binary_to_rawnc(binarydir, rawncdir, cacdir, sensorlist, deploymentyaml, incremental=True, scisuffix=scisuffix, glidersuffix=glidersuffix)
+            # convert binary *.T/EBD and *.S/DBD into *.t/ebd.nc and *.s/dbd.nc netcdf files.
+            #logging.info(f'converting binary *.{scisuffix} and *.{glidersuffix} into *.{scisuffix}.nc and *.{glidersuffix}.nc netcdf files')
+            #logging.info(f'Binary filepath: {binarydir}')
+            #logging.info(f'Output filepath: {rawncdir}')
+            #slocum.binary_to_rawnc(binarydir, rawncdir, cacdir, sensorlist, deploymentyaml, incremental=True, scisuffix=scisuffix, glidersuffix=glidersuffix)
 
-            # this combines all dbds into one file, same with ebds - not sure if I like this part
+            # this combines all dbds into one file, same with ebds - don't like this part don't use
             # slocum.merge_rawnc(raw_outdir, raw_outdir, deploymentyaml, scisuffix=scisuffix, glidersuffix=glidersuffix)
 
             # make level-1 timeseries netcdf file from the merged raw files
@@ -99,6 +101,10 @@ def main(deployments, mode, loglevel, test):
             # outname = slocum.raw_to_timeseries(raw_outdir, ts_dir, deploymentyaml, profile_filt_time=100, profile_min_time=300)
             
             # make level-1 timeseries netcdf file from each debd.nc pair - modified by Lori
+            logging.info(f'merging *.{scisuffix}.nc and *.{glidersuffix}.nc netcdf files into timeseries netcdf files')
+            logging.info(f'Individual *.{scisuffix}.nc and *.{glidersuffix}.nc filepath: {rawncdir}')
+            logging.info(f'Trajectory output filepath: {outdir}')
+            
             files = glob.glob(os.path.join(rawncdir, '*.nc'))
             trajectory_list = []
             for file in files:
@@ -107,8 +113,9 @@ def main(deployments, mode, loglevel, test):
                     trajectory_list.append(trajectory)
             
             for traj in sorted(trajectory_list):
-                outname = slocum.raw_trajectory_to_timeseries(rawncdir, outdir, deploymentyaml, profile_filt_time=30, 
-                                                            profile_min_time=300, trajectory=traj)
+                print(traj)
+                outinfo = slocum.raw_trajectory_to_timeseries(rawncdir, outdir, deploymentyaml, logging, profile_filt_time=30, 
+                                                              profile_min_time=300, trajectory=traj)
 
             print('done')
             
@@ -116,8 +123,8 @@ def main(deployments, mode, loglevel, test):
 
 
 if __name__ == '__main__':
-    deploy = 'ru44-20250306T0038'
-    mode = 'delayed'
+    deploy = 'ru44-20250306T0038'  #  ru44-20250306T0038 ru44-20250325T0438 ru39-20250423T1535
+    mode = 'rt'  # delayed rt
     ll = 'info'
     test = True
     main(deploy, mode, ll, test)

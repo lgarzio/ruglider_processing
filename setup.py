@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-from rugliderqc import __version__
+from ruglider_processing import __version__
 
 setup(
     name='ruglider_processing',
