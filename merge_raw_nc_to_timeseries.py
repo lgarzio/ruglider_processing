@@ -2,19 +2,16 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 5/20/2025
-Testing pyglider
+Last modified: lgarzio on 6/10/2025
+Convert raw DBD/EBD or SBD/TBD netCDF files from
+Slocum gliders to merged timeseries netCDF files using pyglider.
 """
 
 import os
 import argparse
 import sys
 import glob
-import numpy as np
-import xarray as xr
-import pyglider.ncprocess as ncprocess
 import pyglider.slocum as slocum
-import pyglider.utils as pgutils
 import ruglider_processing.common as cf
 from ruglider_processing.loggers import logfile_basename, setup_logger, logfile_deploymentname
 
@@ -47,8 +44,12 @@ def main(deployments, mode, loglevel, test):
             # find the deployment binary data filepath
             binarydir, rawncdir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, mode)
 
-            if not binarydir:
-                logging_base.error(f'{deployment} binary file data directory not found')
+            if not os.path.isdir(rawncdir):
+                logging_base.error(f'{deployment} raw NetCDF file data directory not found')
+                continue
+            
+            if not os.path.isdir(outdir):
+                logging_base.error(f'{deployment} output file data directory not found')
                 continue
 
             if not os.path.isdir(os.path.join(deployment_location, 'proc-logs')):
@@ -86,19 +87,6 @@ def main(deployments, mode, loglevel, test):
                 continue
             
             logging.info(f'Processing: {deployment} {mode}')
-
-            # convert binary *.T/EBD and *.S/DBD into *.t/ebd.nc and *.s/dbd.nc netcdf files.
-            #logging.info(f'converting binary *.{scisuffix} and *.{glidersuffix} into *.{scisuffix}.nc and *.{glidersuffix}.nc netcdf files')
-            #logging.info(f'Binary filepath: {binarydir}')
-            #logging.info(f'Output filepath: {rawncdir}')
-            #slocum.binary_to_rawnc(binarydir, rawncdir, cacdir, sensorlist, deploymentyaml, incremental=True, scisuffix=scisuffix, glidersuffix=glidersuffix)
-
-            # this combines all dbds into one file, same with ebds - don't like this part don't use
-            # slocum.merge_rawnc(raw_outdir, raw_outdir, deploymentyaml, scisuffix=scisuffix, glidersuffix=glidersuffix)
-
-            # make level-1 timeseries netcdf file from the merged raw files
-            # ts_dir = os.path.join(outdir, 'timeseries')
-            # outname = slocum.raw_to_timeseries(raw_outdir, ts_dir, deploymentyaml, profile_filt_time=100, profile_min_time=300)
             
             # make level-1 timeseries netcdf file from each debd.nc pair - modified by Lori
             logging.info(f'merging *.{scisuffix}.nc and *.{glidersuffix}.nc netcdf files into timeseries netcdf files')
@@ -123,7 +111,7 @@ def main(deployments, mode, loglevel, test):
 
 
 if __name__ == '__main__':
-    deploy = 'ru44-20250306T0038'  #  ru44-20250306T0038 ru44-20250325T0438 ru39-20250423T1535
+    deploy = 'ru39-20250423T1535'  #  ru44-20250306T0038 ru44-20250325T0438 ru39-20250423T1535
     mode = 'rt'  # delayed rt
     ll = 'info'
     test = True
