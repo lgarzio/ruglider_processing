@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 6/10/2025
+Last modified: lgarzio on 8/6/2025
 Convert raw DBD/EBD or SBD/TBD netCDF files from
 Slocum gliders to merged timeseries netCDF files using pyglider.
 """
@@ -56,7 +56,7 @@ def main(deployments, mode, loglevel, test):
                 logging_base.error(f'{deployment} deployment proc-logs directory not found')
                 continue
 
-            logfilename = logfile_deploymentname(deployment, mode)
+            logfilename = logfile_deploymentname(deployment, mode, 'proc_merge_nc_to_timeseries')
             logFile = os.path.join(deployment_location, 'proc-logs', logfilename)
             logging = setup_logger('logging', loglevel, logFile)
 
@@ -69,11 +69,6 @@ def main(deployments, mode, loglevel, test):
             deploymentyaml = os.path.join(deployment_config_root, 'deployment.yml')
             if not os.path.isfile(deploymentyaml):
                 logging.warning(f'Invalid deployment.yaml file: {deploymentyaml}')
-            
-            # Find sensor list for processing binary files
-            sensorlist = os.path.join(deployment_config_root, 'sensors.txt')
-            if not os.path.isfile(sensorlist):
-                logging.warning(f'Invalid sensors.txt file: {sensorlist}')
             
             if mode == 'rt':
                 scisuffix = 'tbd'
@@ -88,10 +83,10 @@ def main(deployments, mode, loglevel, test):
             
             logging.info(f'Processing: {deployment} {mode}')
             
-            # make level-1 timeseries netcdf file from each debd.nc pair - modified by Lori
+            # make timeseries netcdf file from each debd.nc/stdb.nc pair
             logging.info(f'merging *.{scisuffix}.nc and *.{glidersuffix}.nc netcdf files into timeseries netcdf files')
             logging.info(f'Individual *.{scisuffix}.nc and *.{glidersuffix}.nc filepath: {rawncdir}')
-            logging.info(f'Trajectory output filepath: {outdir}')
+            logging.info(f'Timeseries output filepath: {outdir}')
             
             files = glob.glob(os.path.join(rawncdir, '*.nc'))
             trajectory_list = []
@@ -100,12 +95,19 @@ def main(deployments, mode, loglevel, test):
                 if trajectory not in trajectory_list:
                     trajectory_list.append(trajectory)
             
+            # log the number of .nc files to be merged
+            scicount = len([f for f in os.listdir(rawncdir) if f.endswith(f'.{scisuffix}.nc')])
+            flightcount = len([f for f in os.listdir(rawncdir) if f.endswith(f'.{glidersuffix}.nc')])
+            logging.info(f'Found {scicount} *.{scisuffix}.nc (science) and {flightcount} *.{glidersuffix}.nc (flight) files to merge')
+
             for traj in sorted(trajectory_list):
                 print(traj)
                 outinfo = slocum.raw_trajectory_to_timeseries(rawncdir, outdir, deploymentyaml, logging, profile_filt_time=30, 
                                                               profile_min_time=300, trajectory=traj)
 
-            print('done')
+            # log how many files were successfully merged
+            outputcount = len([f for f in os.listdir(outdir) if f.endswith('.nc')])
+            logging.info(f'Successfully created {outputcount} merged *.nc files (out of {scicount} *.{scisuffix}.nc files and {flightcount} *.{glidersuffix}.nc files)')
             
         return status
 

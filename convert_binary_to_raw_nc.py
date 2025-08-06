@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 6/10/2025
+Last modified: lgarzio on 8/6/2025
 Convert binary DBD/EBD or SBD/TBD file pairs from 
 Slocum gliders to raw netCDF files using pyglider.
 """
@@ -55,7 +55,7 @@ def main(deployments, mode, loglevel, test):
                 logging_base.error(f'{deployment} deployment proc-logs directory not found')
                 continue
 
-            logfilename = logfile_deploymentname(deployment, mode)
+            logfilename = logfile_deploymentname(deployment, mode, 'proc_binary_to_rawnc')
             logFile = os.path.join(deployment_location, 'proc-logs', logfilename)
             logging = setup_logger('logging', loglevel, logFile)
 
@@ -91,10 +91,18 @@ def main(deployments, mode, loglevel, test):
             logging.info(f'Converting binary *.{scisuffix} and *.{glidersuffix} into *.{scisuffix}.nc and *.{glidersuffix}.nc netcdf files')
             logging.info(f'Binary filepath: {binarydir}')
             logging.info(f'Output filepath: {rawncdir}')
-            slocum.binary_to_rawnc(binarydir, rawncdir, cacdir, sensorlist, deploymentyaml, incremental=True, scisuffix=scisuffix, glidersuffix=glidersuffix)
-            logging.info(f'Finished converting *.{scisuffix} and *.{glidersuffix} into netcdf files')
 
-            print('done')
+            # log the number of binary files to be converted
+            scicount = len([f for f in os.listdir(binarydir) if f.endswith(f'.{scisuffix}')])
+            flightcount = len([f for f in os.listdir(binarydir) if f.endswith(f'.{glidersuffix}')])
+            slocum.binary_to_rawnc(binarydir, rawncdir, cacdir, sensorlist, deploymentyaml, incremental=True, scisuffix=scisuffix, glidersuffix=glidersuffix)
+            
+            # log how many files were successfully converted from binary to *.nc
+            oscicount = len([f for f in os.listdir(rawncdir) if f.endswith(f'.{scisuffix}.nc')])
+            oflightcount = len([f for f in os.listdir(rawncdir) if f.endswith(f'.{glidersuffix}.nc')])
+            logging.info(f'Successfully converted {oscicount} of {scicount} science binary files with suffix *.{scisuffix}')
+            logging.info(f'Successfully converted {oflightcount} of {flightcount} engineering binary files with suffix *.{glidersuffix}')
+            logging.info(f'Finished converting binary files to raw netcdf files')
             
         return status
 
