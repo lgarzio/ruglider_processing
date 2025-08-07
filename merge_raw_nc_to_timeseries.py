@@ -89,21 +89,21 @@ def main(deployments, mode, loglevel, test):
             logging.info(f'Timeseries output filepath: {outdir}')
             
             files = glob.glob(os.path.join(rawncdir, '*.nc'))
-            trajectory_list = []
+            segment_list = []
             for file in files:
-                trajectory = os.path.basename(file).split('.')[0]
-                if trajectory not in trajectory_list:
-                    trajectory_list.append(trajectory)
+                segment = os.path.basename(file).split('.')[0]
+                if segment not in segment_list:
+                    segment_list.append(segment)
             
             # log the number of .nc files to be merged
             scicount = len([f for f in os.listdir(rawncdir) if f.endswith(f'.{scisuffix}.nc')])
             flightcount = len([f for f in os.listdir(rawncdir) if f.endswith(f'.{glidersuffix}.nc')])
             logging.info(f'Found {scicount} *.{scisuffix}.nc (science) and {flightcount} *.{glidersuffix}.nc (flight) files to merge')
 
-            for traj in sorted(trajectory_list):
-                print(traj)
-                outinfo = slocum.raw_trajectory_to_timeseries(rawncdir, outdir, deploymentyaml, logging, profile_filt_time=30, 
-                                                              profile_min_time=300, trajectory=traj)
+            for seg in sorted(segment_list):
+                print(seg)
+                outinfo = slocum.raw_segment_to_timeseries(rawncdir, outdir, deploymentyaml, logging, profile_filt_time=30,
+                                                           profile_min_time=300, segment=seg)
 
             # log how many files were successfully merged
             outputcount = len([f for f in os.listdir(outdir) if f.endswith('.nc')])
