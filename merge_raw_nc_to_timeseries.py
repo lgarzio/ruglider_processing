@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 8/6/2025
+Last modified: lgarzio on 8/13/2025
 Convert raw DBD/EBD or SBD/TBD netCDF files from
 Slocum gliders to merged timeseries netCDF files using pyglider.
 """
@@ -30,11 +30,6 @@ def main(deployments, mode, loglevel, test):
     logging_base = setup_logger('logging_base', loglevel, logFile_base)
 
     data_home, deployments_root = cf.find_glider_deployments_rootdir(logging_base, test)
-
-    # Find the cache file directory
-    cacdir = os.path.join(data_home, 'cac')
-    if not os.path.isdir(cacdir):
-        logging_base.error(f'cache file directory not found: {cacdir}')
     
     if isinstance(deployments_root, str):
 
