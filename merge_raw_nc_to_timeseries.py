@@ -73,9 +73,11 @@ def main(deployments, mode, loglevel, test):
             if mode == 'rt':
                 scisuffix = 'tbd'
                 glidersuffix = 'sbd'
+                profile_filter_time = 30
             elif mode == 'delayed':
                 scisuffix = 'ebd'
                 glidersuffix = 'dbd'
+                profile_filter_time = 30
             else:
                 logging.warning(f'Invalid mode provided: {mode}')
                 status = 1
@@ -102,8 +104,8 @@ def main(deployments, mode, loglevel, test):
 
             for seg in sorted(segment_list):
                 print(seg)
-                outinfo = slocum.raw_segment_to_timeseries(rawncdir, outdir, deploymentyaml, logging, profile_filt_time=30,
-                                                           profile_min_time=300, segment=seg)
+                outinfo = slocum.raw_segment_to_timeseries(rawncdir, outdir, deploymentyaml, logging, profile_filt_time=profile_filter_time,
+                                                           profile_min_time=60, segment=seg)
 
             # log how many files were successfully merged
             outputcount = len([f for f in os.listdir(outdir) if f.endswith('.nc')])
