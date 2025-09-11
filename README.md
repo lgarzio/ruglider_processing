@@ -24,3 +24,25 @@ Navigate to the forked version of pyglider
 
 Install the forked version of pyglider in the environment in editable mode (if you want to make edits)
 `pip install -e .`
+
+### Directory structure in glider deployment directory
+
+```bash
+├── config
+│   ├── qc
+│   └── proc
+├── data
+│   └── in
+│       └── binary
+│           └── debd
+│           └── stbd
+│       └── rawnc
+│           └── debd
+│           └── stbd
+│   └── out
+│       └── delayed
+│           └── qc_queue
+│       └── rt
+│           └── qc_queue
+└── proc-logs
+```
