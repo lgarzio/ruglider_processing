@@ -63,7 +63,7 @@ def find_glider_deployment_datapath(logger, deployment, deployments_root, mode):
                     nc_outpath = os.path.join(deployment_location, 'data', 'in', 'rawnc', modemap)
 
                     # Set the deployment output file directory
-                    outdir = os.path.join(deployment_location, 'data', 'out', mode)
+                    outdir = os.path.join(deployment_location, 'data', 'out', mode, 'qc_queue')
                     
                     if not os.path.isdir(data_path):
                         logger.warning(f'{trajectory} data directory not found: {data_path}')
