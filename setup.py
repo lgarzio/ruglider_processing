@@ -1,9 +1,8 @@
 from setuptools import setup, find_packages
-from ruglider_processing import __version__
 
 setup(
     name='ruglider_processing',
-    version=__version__,
+    version='0.0.1',
     packages=find_packages(),
     url='https://github.com/lgarzio/ruglider_processing',
     author='Lori Garzio',
