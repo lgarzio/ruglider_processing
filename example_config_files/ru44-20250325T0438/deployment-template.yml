@@ -1,0 +1,338 @@
+metadata:
+  # https://github.com/ioos/ioosngdac/wiki/NGDAC-NetCDF-File-Format-Version-2
+  acknowledgement: This deployment is supported by The Climate Foundation
+  comment: Deployed by Joe Rauch and team on a small boat out of Compostela, Cebu, Philippines with shoreside support from Jessica Leonard. Data from the CTD are suspect. Potential lag mostly visible in the salinity profiles. Please use with caution.
+  contributor_name: Oscar Schofield, Dave Aragon, Nicole Waite, Brian Buckingham, Jessica Leonard, John Kerfoot, Lori Garzio, Laura Nazzaro
+  contributor_role: Principal Investigator, Glider Pilot, Glider Pilot, Glider Pilot, Glider Pilot, Data Management, Data Management, Data Management
+  creator_email: gliderdata@marine.rutgers.edu
+  creator_name: Rutgers Center for Ocean Observing Leadership Glider Data Team
+  creator_type: group
+  creator_institution: Rutgers University
+  creator_url: https://rucool.marine.rutgers.edu/
+  # R: real time. P: provisional
+  data_mode: 'R'
+  # date_created etc: added automatically
+  # numbers must be eenclosed by strings so YAML keeps as strings
+  deployment_id: 'ru44-20250325T0438'
+  deployment_name: 'ru44-20250325T0438'
+  deployment_start: '2025-03-25'
+  deployment_end: '2025-04-22'
+  format_version: IOOS_Glider_NetCDF_v2.0.nc
+  # id filled automatically...
+  glider_name: ru44
+  glider_serial: '1068'
+  glider_model: Teledyne Webb Research Slocum G3S glider
+  glider_instrument_name: slocum
+  glider_wmo: "8901127"
+  institution: Rutgers University
+  keywords: "AUVS, Autonomous Underwater Vehicles, Oceans, Ocean Pressure,
+             Water Pressure, Oceans, Ocean Temperature, Water Temperature,
+             Oceans, Salinity/Density, Conductivity, Oceans,
+             Salinity/Density, Density, Oceans, Salinity/Density, Salinity"
+  keywords_vocabulary: GCMD Science Keywords
+  license: "This data may be redistributed and used without restriction or
+            warranty"
+  metadata_link: "https://cproof.uvic.ca"
+  Metadata_Conventions: CF-1.8, Unidata Dataset Discovery v1.0
+  naming_authority: "ca.uvic.cproof"
+  platform_type:    "Slocum Glider"
+  processing_level: "Data provided as is with no expressed or implied
+                     assurance of quality assurance or quality control."
+  project: Seaforestation
+  project_url: http://cproof.uvic.ca
+  publisher_email: gliderdata@marine.rutgers.edu
+  publisher_name:  Rutgers Center for Ocean Observing Leadership Glider Data Team
+  publisher_url:   https://rucool.marine.rutgers.edu/
+  references:     https://rucool.marine.rutgers.edu/,https://www.climatefoundation.org/marine-permaculture.html
+  # https://www.nodc.noaa.gov/General/NODC-Archive/seanamelist.txt
+  sea_name:   Philippine Sea
+  source:     Observational data from a profiling glider.
+  standard_name_vocabulary: CF STandard Name Table v72
+  summary: The project supports the assessment and development of an open ocean seaweed farming demonstration facility near Cebu City, Philippines. The project will provide a framework for assessing the potential to increase carbon dioxide sequestration in the ocean. Assessing the seaweed farm potential will require the capability for assessing the biogeochemical impacts associated with the seaweed farm and the corresponding environmental footprint on the regional systems. The glider will be deployed in an ocean monitoring program to sample the oceanographic and ecological parameters, providing a baseline dataset to inform potential environmental impacts of seaweed farms. The goal is for sustained spatial sampling around the seaweed farm to map both the upstream and downstream conditions. The glider is equipped with a Seabird CTD, a WETLabs FLBBCD ECO puck configured for simultaneous chlorophyll fluorescence, colored dissolved organic matter, and optical backscatter measurements, an Aanderaa Optode for measuring dissolved oxygen, and a Seabird SUNA for measuring nitrate concentrations. Delayed mode dataset.
+  transmission_system: IRRIDIUM
+  wmo_id: "8901127"
+
+
+glider_devices:
+  ctd:
+    serial: '9997'
+    long_name: Sea-Bird Slocum Glider GPCTD
+    make: Sea-Bird Scientific
+    model: Sea-Bird Slocum Glider Payload {GPCTD} CTD
+    factory_calibrated: "2023-12-24"
+    calibration_date: "2023-12-24"
+    calibration_report: " "
+    description: "A profiling CTD instrument designed specifically for installation on Slocum autonomous gliders. It measures conductivity, temperature and pressure for use in oceanic research, updating ocean models, assessing sensor stability on moored observatories, and leveraging data collection opportunities from operational vehicle missions. It outputs real-time data in decimal S/m, degC and decibars, or raw decimal counts. It is externally powered and continuously pumped, and can operate in both continuous sampling or polled sampling modes. It features an expendable anti-foulant device offering bio-fouling protection, and is supplied with Seasoft V2 Windows software for setup and data processing. The pressure sensor with temperature compensation is available in 4 strain-gauge ranges; 0-100; 100-350; 350-1000; 1000-2000 metres. It measures conductivity from 0-9 S/m at a resolution of 0.00001 S/m, temperature from -5 to +42 degC at a resolution of 0.001 degC, and pressure up to 2000 m (dependant on the range chosen), at a resolution of 0.002 percent of full scale range."
+    comment: "Data from this CTD are suspect. Potential lag mostly visible in the salinity profiles. Please use with caution."
+  optics:
+    make: WET Labs,Sea-Bird Scientific
+    model: WETLabs ECO Puck Triplet FLBBCD-SLC scattering fluorescence sensor
+    serial: '8639'
+    factory_calibrated: "2024-01-12"
+    calibration_date: "2024-01-12"
+    description: "A variant of the ECO Puck Triplet (http://vocab.nerc.ac.uk/collection/L22/current/TOOL0673/). It is a three-optical-sensor, user-defined instrument that carries a chlorophyll-a fluorometer, FDOM fluorometer and scattering meter. ECO Pucks are real-time only sensors as they are integrated onto the OEM platform that provides power and data handling. The SLC designation signifies this is a third generation model that is specific for integration into Slocum gliders with a dry science bay. The fluorometers and scattering meter are single wavelength sensors. The model is fitted with an added copper faceplate for bio-fouling mitigation and is depth-rated to 1000 m."
+  oxygen:
+    make: Aanderaa Data Instruments AS
+    model: Aanderaa Oxygen Optode 4831
+    serial: '1138'
+    factory_calibrated: "2023-04-09"
+    calibration_date: "2023-04-09"
+    user_calibrated: "2024-06-05"
+    description: "A dissolved oxygen sensor which provides analogue (0-5V) and digital output (RS-232) to third party data loggers, gliders and floats. Measurement based on the ability of selected substances to act as dynamic fluorescence quenchers. The fluorescent indicator is a special platinum porphyrin complex embedded in a gas permeable foil that is exposed to the surrounding water. In this standard model, a black optical isolation coating protects the complex from sunlight and fluorescent particles in the water. This sensing foil is attached to a window providing optical access for the measuring system from inside a watertight housing. The foil is excited by modulated blue light, and the phase of a returned red light is measured. For improved stability the 4831 optode also performs a reference phase reading by use of a red LED that does not produce fluorescence in the foil. This model is fitted with a standard sensing foil. By linearizing and temperature compensating, with an incorporated temperature sensor, the absolute O2 concentration can be determined. Accuracy +/- 1.5% or 2uM; precision +/- 0.2 uM."
+  suna:
+    make: Sea-Bird Scientific,Satlantic
+    model: Submersible Ultraviolet Nitrate Analyser V2 (SUNA V2)
+    serial: '2277'
+    factory_calibrated: "2024-02-16"
+    calibration_date: "2024-02-16"
+    description: "The SUNA V2 UV nitrate sensor monitors nutrient concentrations in real-time. This sensor measures nitrate over a wide range of environmental conditions, from blue-ocean nitraclines to storm runoff in rivers and streams. Applications include long-term nutrient monitoring, Coastal water profiling, Water quality monitoring, and pollution detection. Full UV spectrum range for maximum accuracy. Real-time nitrate calculation with real-time temperature/salinity compensation. The SUNA V2 incorporates the proven MBARI-ISUS nitrate measurement technology, which is based on the absorption characteristics of nitrate in the UV light spectrum. It has the option of 10 or 5 mm pathlength, a wavelength range of 190 - 370 nm, and a depth rating of 500 m."
+
+# map between glider variables and netcdf variables.  This shouldn't
+# change too much.
+netcdf_variables:
+  # Time and Place:
+  time:
+    source:   sci_m_present_time
+    long_name:     Time
+    standard_name: time
+    calendar:      gregorian
+    units:         seconds since 1970-01-01T00:00:00Z
+    axis:          T
+    observation_type: "measured"
+
+  latitude:
+    source:  m_lat
+    long_name:    latitude
+    standard_name: latitude
+    units:        degrees_north
+    axis:         Y
+    comment:     "Estimated between surface fixes"
+    observation_type: measured
+    platform:     platform
+    reference:    WGS84
+    valid_max:    90.0
+    valid_min:    -90.0
+    coordinate_reference_frame:  urn:ogc:crs:EPSG::4326
+
+  longitude:
+    source:  m_lon
+    long_name:    longitude
+    standard_name: longitude
+    units:        degrees_east
+    axis:         X
+    comment:     "Estimated between surface fixes"
+    observation_type: measured
+    platform:     platform
+    reference:    WGS84
+    valid_max:    180.0
+    valid_min:    -180.0
+    coordinate_reference_frame:  urn:ogc:crs:EPSG::4326
+
+  heading:
+    source:  m_heading
+    long_name:    glider heading angle
+    standard_name: platform_orientation
+    units:        degrees
+
+  pitch:
+    source:  m_pitch
+    long_name:    glider pitch angle
+    standard_name: platform_pitch_angle
+    units:        degrees
+
+  roll:
+    source:  m_roll
+    long_name:    glider roll angle
+    standard_name: platform_roll_angle
+    units:        degrees
+
+  # profile info:
+  waypoint_latitude:
+    source:  c_wpt_lat
+    long_name:    waypoint latitude
+    standard_name: latitude
+    units:        degree_north
+
+  waypoint_longitude:
+    source:  c_wpt_lon
+    long_name:    waypoint longitude
+    standard_name: longitude
+    units:        degree_east
+
+  # data parameters
+  conductivity:
+    source:  sci_water_cond
+    long_name:    water conductivity
+    standard_name: sea_water_electrical_conductivity
+    units:        S m-1
+    instrument:    instrument_ctd
+    valid_min:    0.
+    valid_max:    10.
+    observation_type: "measured"
+    accuracy:      0.0003
+    precision:     0.0001
+    resolution:     0.00002
+
+  temperature:
+    source:  sci_water_temp
+    long_name:    water temperature
+    standard_name: sea_water_temperature
+    units:        Celsius
+    instrument:   instrument_ctd
+    valid_min:    -5.0
+    valid_max:    50.0
+    observation_type: "measured"
+    accuracy:      0.002
+    precision:     0.001
+    resolution:    0.0002
+
+  pressure:
+    source:  sci_water_pressure
+    long_name:    water pressure
+    standard_name:  sea_water_pressure
+    units:        dbar
+    conversion:   bar2dbar
+    valid_min:    0.0
+    valid_max:    2000.0
+    positive:      "down"
+    reference_datum:  "sea-surface"
+    instrument:     "instrument_ctd"
+    observation_type: "measured"
+    accuracy:         1.0
+    precision:        2.0
+    resolution:       0.02
+    comment:          "ctd pressure sensor"
+
+  m_depth:
+    source:  m_depth
+    long_name:    Depth
+    standard_name:  depth
+    units:        m
+    valid_min:    0.0
+    valid_max:    2000.0
+    positive:      "down"
+    reference_datum:  "sea-surface"
+    Comment: "Depth measured by the glider pressure transducer"
+
+# derived water speed:
+  water_velocity_eastward:
+    source:    m_final_water_vx
+    long_name:      mean eastward water velocity in segment
+    standard_name:  barotropic_eastward_sea_water_velocity
+    units:          m s-1
+    coordinates:   time depth latitude longitude
+  
+  water_velocity_northward:
+    source:    m_final_water_vy
+    long_name:      mean northward water velocity in segment
+    standard_name:  barotropic_northward_sea_water_velocity
+    units:          m s-1
+    coordinates:   time depth latitude longitude
+
+profile_variables:
+  # variables for extract_L1timeseries_profiles processing step...
+  profile_id:
+    comment: Sequential profile number within the trajectory.  This value is unique in each file that is part of a single trajectory/deployment.
+    long_name: 'Profile ID'
+    valid_max: 2147483646
+    valid_min: 1
+
+  profile_time:
+    comment:           Timestamp corresponding to the mid-point of the profile
+    long_name:         Profile Center Time
+    observation_type:  calculated
+    platform:          platform
+    standard_name:     time
+
+  profile_time_start:
+    comment:           Timestamp corresponding to the start of the profile
+    long_name:         Profile Start Time
+    observation_type:  calculated
+    platform:          platform
+    standard_name:     time
+
+  profile_time_end:
+    comment:           Timestamp corresponding to the end of the profile
+    long_name:         Profile End Time
+    observation_type:  calculated
+    platform:          platform
+    standard_name:     time
+
+  profile_lat:
+    comment:           Value is interpolated to provide an estimate of the latitude at the mid-point of the profile
+    long_name:         Profile Center Latitude
+    observation_type:  calculated
+    platform:          platform
+    standard_name:     latitude
+    units:             degrees_north
+    valid_max:         90.0
+    valid_min:         -90.0
+
+  profile_lon:
+    comment:           Value is interpolated to provide an estimate of the latitude at the mid-point of the profile
+    long_name:         Profile Center Longitude
+    observation_type:  calculated
+    platform:          platform
+    standard_name:     longitude
+    units:             degrees_east
+    valid_max:         180.0
+    valid_min:         -180.0
+
+  u:
+    comment:  The depth-averaged current is an estimate of the net current measured while the glider is underwater.  The value is calculated over the entire underwater segment, which may consist of 1 or more dives.
+    long_name:         Depth-Averaged Eastward Sea Water Velocity
+    observation_type:  calculated
+    platform:          platform
+    standard_name:     eastward_sea_water_velocity
+    units:             m s-1
+    valid_max:         10.0
+    valid_min:         -10.0
+
+  v:
+    comment:  The depth-averaged current is an estimate of the net current measured while the glider is underwater.  The value is calculated over the entire underwater segment, which may consist of 1 or more dives.
+    long_name:         Depth-Averaged Northward Sea Water Velocity
+    observation_type:  calculated
+    platform:          platform
+    standard_name:     northward_sea_water_velocity
+    units:             m s-1
+    valid_max:         10.0
+    valid_min:         -10.0
+
+  lon_uv:
+    comment:           Not computed
+    long_name:         Longitude
+    observation_type:  calculated
+    platform:          platform
+    standard_name:     longitude
+    units:             degrees_east
+    valid_max:         180.0
+    valid_min:         -180.0
+
+  lat_uv:
+    comment:           Not computed
+    long_name:         Latitude
+    observation_type:  calculated
+    platform:          platform
+    standard_name:     latitude
+    units:             degrees_north
+    valid_max:         90.0
+    valid_min:         -90.0
+
+  time_uv:
+    comment:       Not computed
+    long_name:     Time
+    standard_name: time
+    calendar:      gregorian
+    units:         seconds since 1970-01-01T00:00:00Z
+    observation_type: calculated
+
+  instrument_ctd:
+    comment:    pumped CTD
+    calibration_date:     "2017-12-24"
+    calibration_report:   20171224_Seabird_SlocumCTD_SN9446_calibrations.pdf
+    factory_calibrated:  "yes"
+    long_name:           Seabird Glider Payload CTD
+    make_model:          Seabird GPCTD
+    platform:            platform
+    serial_number:       "9446"
+    type:                platform
