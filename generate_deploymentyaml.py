@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 9/11/2025
-Last modified: lgarzio on 9/11/2025
+Last modified: lgarzio on 9/12/2025
 Generate the deployment.yml file for a glider deployment
 Right now, just adds all of the sensors listed in sensors.txt
 to the deployment.yml file using sensor information from
@@ -105,15 +105,18 @@ def main(deployments, mode, loglevel, test):
                 if check:
                     continue  # it's already in deployment.yml so skip this variable
                 else:
-                    template_data['netcdf_variables'][sensor] = {}
-                    template_data['netcdf_variables'][sensor]['source'] = sensor
                     # find the variable information in sensor_defs and add to the deployment.yml file
                     try:
                         sensor_info = combined_data[sensor]
+                        keyname = sensor_info['nc_var_name']
+                        template_data['netcdf_variables'][keyname] = {}
+                        template_data['netcdf_variables'][keyname]['source'] = sensor
                         for key, value in sensor_info['attrs'].items():
                             if key in ['axis', 'units', 'long_name', 'standard_name', 'valid_min', 'valid_max', 'fill_value']:
-                                template_data['netcdf_variables'][sensor][key] = value
+                                template_data['netcdf_variables'][keyname][key] = value
                     except KeyError:
+                        template_data['netcdf_variables'][sensor] = {}
+                        template_data['netcdf_variables'][sensor]['source'] = sensor
                         logging.warning(f'No information found for {sensor} in sensor_defs-raw.json or sensor_defs-sci_profile.json')
 
             # Write the final deployment.yml file
