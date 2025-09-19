@@ -100,6 +100,50 @@ def find_glider_deployment_datapath(logger, deployment, deployments_root, mode):
     return data_path, nc_outpath, outdir, deployment_location
 
 
+def find_glider_deployment_location(logger, deployment, deployments_root):
+    """
+    Find the glider deployment location
+    :param logger: logger object
+    :param deployment: glider deployment/trajectory name e.g. ru44-20250306T0038
+    :param deployments_root: root directory for glider deployments
+    :return: deployment_location
+    """
+    glider_regex = re.compile(r'^(.*)-(\d{8}T\d{4})')
+    match = glider_regex.search(deployment)
+    if match:
+        try:
+            (glider, trajectory) = match.groups()
+            try:
+                trajectory_dt = parser.parse(trajectory).replace(tzinfo=pytz.UTC)
+            except ValueError as e:
+                logger.error('Error parsing trajectory date {:s}: {:}'.format(trajectory, e))
+                trajectory_dt = None
+                data_path = None
+                deployment_location = None
+
+            if trajectory_dt:
+                trajectory = '{:s}-{:s}'.format(glider, trajectory_dt.strftime('%Y%m%dT%H%M'))
+                deployment_name = os.path.join('{:0.0f}'.format(trajectory_dt.year), trajectory)
+
+                # Create fully-qualified path to the deployment location
+                deployment_location = os.path.join(deployments_root, deployment_name)
+
+                if os.path.isdir(deployment_location):
+                    logger.info(f'Deployment location found: {deployment_location}')
+                else:
+                    logger.warning(f'Deployment location does not exist: {deployment_location}')
+                    deployment_location = None
+
+        except ValueError as e:
+            logger.error(f'Error parsing invalid deployment name {deployment}: {e}')
+            deployment_location = None
+    else:
+        logger.error(f'Cannot pull glider name from {deployment}')
+        deployment_location = None
+
+    return deployment_location
+
+
 def find_glider_deployments_rootdir(logger, test):
     # Find the glider deployments root directory
     if test:
