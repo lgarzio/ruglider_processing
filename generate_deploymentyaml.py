@@ -111,10 +111,13 @@ def main(deployments, loglevel, test):
                 logging.error(f"platform.yml file not found: {platformfile}")
                 continue
 
-            # add the platform WMO ID and deployment ID to the global attributes
+            # add extra info to the global attributes
             template_data['metadata']['wmo_id'] = platform_metadata['platform']['wmo_id']
             template_data['metadata']['wmo_platform_code'] = platform_metadata['platform']['wmo_platform_code']
             template_data['metadata']['deployment'] = deployment
+            template_data['metadata']['deployment_name'] = deployment
+            template_data['metadata']['glider_name'] = platform_metadata['glider']
+            template_data['metadata']['glider_serial'] = platform_metadata['platform']['serial_number']
 
             # find and open instruments.json
             instrumentsfile = os.path.join(deployment_config_root, 'instruments.json')
