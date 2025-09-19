@@ -1,0 +1,90 @@
+[
+    {
+        "attrs": {
+            "calibration_date": "2023-12-24",
+            "comment": "Data from this CTD are suspect. Potential lag mostly visible in the salinity profiles. Please use with caution.",
+            "description": "A profiling CTD instrument designed specifically for installation on Slocum autonomous gliders. It measures conductivity, temperature and pressure for use in oceanic research, updating ocean models, assessing sensor stability on moored observatories, and leveraging data collection opportunities from operational vehicle missions. It outputs real-time data in decimal S/m, degC and decibars, or raw decimal counts. It is externally powered and continuously pumped, and can operate in both continuous sampling or polled sampling modes. It features an expendable anti-foulant device offering bio-fouling protection, and is supplied with Seasoft V2 Windows software for setup and data processing. The pressure sensor with temperature compensation is available in 4 strain-gauge ranges; 0-100; 100-350; 350-1000; 1000-2000 metres. It measures conductivity from 0-9 S/m at a resolution of 0.00001 S/m, temperature from -5 to +42 degC at a resolution of 0.001 degC, and pressure up to 2000 m (dependant on the range chosen), at a resolution of 0.002 percent of full scale range.",
+            "factory_calibrated": "2023-12-24",
+            "long_name": "Sea-Bird Slocum Glider GPCTD",
+            "maker": "Sea-Bird Scientific",
+            "maker_vocabulary": "https://vocab.nerc.ac.uk/collection/B75/current/ORG00226/,https://vocab.nerc.ac.uk/collection/L35/current/MAN0013/",
+            "model": "Sea-Bird Slocum Glider Payload {GPCTD} CTD",
+            "model_vocabulary": "https://vocab.nerc.ac.uk/collection/L22/current/TOOL1492/",
+            "owner": "Rutgers University",
+            "references": "",
+            "serial_number": "9997",
+            "type": "CTD,salinity sensor,sensor model,water temperature sensor,water pressure sensor",
+            "type_vocabulary": "http://vocab.nerc.ac.uk/collection/L05/current/130/,http://vocab.nerc.ac.uk/collection/L05/current/350/,http://vocab.nerc.ac.uk/collection/L19/current/SDNKG17/,http://vocab.nerc.ac.uk/collection/L05/current/134/,http://vocab.nerc.ac.uk/collection/L05/current/WPS/",
+            "user_calibrated": ""
+        },
+        "cfg_file": "/home/glideradm/doco/glideradm/configs/instruments/9997-ctd.yml",
+        "nc_var_name": "instrument_ctd",
+        "type": "i4"
+    },
+    {
+        "attrs": {
+            "calibration_date": "2024-01-12",
+            "comment": "Chlorophyll a,beta700nm,CDOM",
+            "description": "A variant of the ECO Puck Triplet (http://vocab.nerc.ac.uk/collection/L22/current/TOOL0673/). It is a three-optical-sensor, user-defined instrument that carries a chlorophyll-a fluorometer, FDOM fluorometer and scattering meter. ECO Pucks are real-time only sensors as they are integrated onto the OEM platform that provides power and data handling. The SLC designation signifies this is a third generation model that is specific for integration into Slocum gliders with a dry science bay. The fluorometers and scattering meter are single wavelength sensors. The model is fitted with an added copper faceplate for bio-fouling mitigation and is depth-rated to 1000 m.",
+            "factory_calibrated": "2024-01-12",
+            "long_name": "ECO Puck Triplet FLBBCD-SLC",
+            "maker": "WET Labs,Sea-Bird Scientific",
+            "maker_vocabulary": "http://vocab.nerc.ac.uk/collection/L35/current/MAN0026/,http://vocab.nerc.ac.uk/collection/B75/current/ORG00226/",
+            "model": "WETLabs ECO Puck Triplet FLBBCD-SLC scattering fluorescence sensor",
+            "model_vocabulary": "https://vocab.nerc.ac.uk/collection/L22/current/TOOL1312/",
+            "owner": "Rutgers University",
+            "references": "",
+            "serial_number": "8639",
+            "type": "sensor_model,optical backscatter sensor,fluorometer",
+            "type_vocabulary": "http://vocab.nerc.ac.uk/collection/L19/current/SDNKG17/,http://vocab.nerc.ac.uk/collection/L05/current/123/,http://vocab.nerc.ac.uk/collection/L05/current/113/",
+            "user_calibrated": ""
+        },
+        "cfg_file": "/home/glideradm/doco/glideradm/configs/instruments/8639-flbbcdslc.yml",
+        "nc_var_name": "instrument_flbbcdslc",
+        "type": "i4"
+    },
+    {
+        "attrs": {
+            "calibration_date": "2023-04-09",
+            "comment": "Model 4831",
+            "description": "A dissolved oxygen sensor which provides analogue (0-5V) and digital output (RS-232) to third party data loggers, gliders and floats. Measurement based on the ability of selected substances to act as dynamic fluorescence quenchers. The fluorescent indicator is a special platinum porphyrin complex embedded in a gas permeable foil that is exposed to the surrounding water. In this standard model, a black optical isolation coating protects the complex from sunlight and fluorescent particles in the water. This sensing foil is attached to a window providing optical access for the measuring system from inside a watertight housing. The foil is excited by modulated blue light, and the phase of a returned red light is measured. For improved stability the 4831 optode also performs a reference phase reading by use of a red LED that does not produce fluorescence in the foil. This model is fitted with a standard sensing foil. By linearizing and temperature compensating, with an incorporated temperature sensor, the absolute O2 concentration can be determined. Accuracy +/- 1.5% or 2uM; precision +/- 0.2 uM.",
+            "factory_calibrated": "2023-04-09",
+            "long_name": "AA Optode 4831",
+            "maker": "Aanderaa Data Instruments AS",
+            "maker_vocabulary": "http://vocab.nerc.ac.uk/collection/B75/current/ORG00228/,http://vocab.nerc.ac.uk/collection/L35/current/MAN0007/",
+            "model": "Aanderaa Oxygen Optode 4831",
+            "model_vocabulary": "http://vocab.nerc.ac.uk/collection/L22/current/TOOL1239/",
+            "owner": "Rutgers University",
+            "references": "",
+            "serial_number": "1138",
+            "type": "sensor_model,dissolved gas sensors",
+            "type_vocabulary": "http://vocab.nerc.ac.uk/collection/L19/current/SDNKG17/,http://vocab.nerc.ac.uk/collection/L05/current/351/",
+            "user_calibrated": "2024-06-05"
+        },
+        "cfg_file": "/home/glideradm/doco/glideradm/configs/instruments/1138-optode.yml",
+        "nc_var_name": "instrument_optode",
+        "type": "i4"
+    },
+    {
+        "attrs": {
+            "calibration_date": "2024-02-16",
+            "comment": "",
+            "description": "The SUNA V2 UV nitrate sensor monitors nutrient concentrations in real-time. This sensor measures nitrate over a wide range of environmental conditions, from blue-ocean nitraclines to storm runoff in rivers and streams. Applications include long-term nutrient monitoring, Coastal water profiling, Water quality monitoring, and pollution detection. Full UV spectrum range for maximum accuracy. Real-time nitrate calculation with real-time temperature/salinity compensation. The SUNA V2 incorporates the proven MBARI-ISUS nitrate measurement technology, which is based on the absorption characteristics of nitrate in the UV light spectrum. It has the option of 10 or 5 mm pathlength, a wavelength range of 190 - 370 nm, and a depth rating of 500 m.",
+            "factory_calibrated": "2024-02-16",
+            "long_name": "Submersible Ultraviolet Nitrate Analyser V2 (SUNA V2)",
+            "maker": "Sea-Bird Scientific,Satlantic",
+            "maker_vocabulary": "https://vocab.nerc.ac.uk/collection/B75/current/ORG00226/,https://vocab.nerc.ac.uk/collection/L35/current/MAN0013/,https://vocab.nerc.ac.uk/collection/L35/current/MAN0027/",
+            "model": "Submersible Ultraviolet Nitrate Analyser V2 (SUNA V2)",
+            "model_vocabulary": "https://vocab.nerc.ac.uk/collection/L22/current/TOOL1562/",
+            "owner": "Rutgers University",
+            "references": "",
+            "serial_number": "2277",
+            "type": "nutrient analysers,sensor model",
+            "type_vocabulary": "https://vocab.nerc.ac.uk/collection/L05/current/181/,https://vocab.nerc.ac.uk/collection/L19/current/SDNKG17/",
+            "user_calibrated": ""
+        },
+        "cfg_file": "/home/glideradm/doco/glideradm/configs/instruments/2277-suna.yml",
+        "nc_var_name": "instrument_suna",
+        "type": "i4"
+    }
+]
