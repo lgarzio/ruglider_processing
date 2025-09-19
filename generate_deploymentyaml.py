@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 9/11/2025
-Last modified: lgarzio on 9/12/2025
+Last modified: lgarzio on 9/19/2025
 Generate the deployment.yml file for a glider deployment
 Right now, just adds all of the sensors listed in sensors.txt
 to the deployment.yml file using sensor information from
@@ -28,11 +28,10 @@ def is_sensor_listed_as_source(sensor, template_data):
 
 
 #def main(args):
-def main(deployments, mode, loglevel, test):
+def main(deployments, loglevel, test):
     status = 0
 
     # loglevel = args.loglevel.upper()
-    # mode = args.mode
     # test = args.test
     loglevel = loglevel.upper()
 
@@ -48,13 +47,13 @@ def main(deployments, mode, loglevel, test):
         for deployment in [deployments]:
 
             # find the deployment binary data filepath
-            binarydir, rawncdir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, mode)
+            deployment_location = cf.find_glider_deployment_location(logging_base, deployment, deployments_root)
 
             if not os.path.isdir(os.path.join(deployment_location, 'proc-logs')):
                 logging_base.error(f'{deployment} deployment proc-logs directory not found')
                 continue
 
-            logfilename = logfile_deploymentname(deployment, mode, 'generate_deploymentyaml')
+            logfilename = logfile_deploymentname(deployment, 'configure', 'deploymentyaml')
             logFile = os.path.join(deployment_location, 'proc-logs', logfilename)
             logging = setup_logger('logging', loglevel, logFile)
 
@@ -75,16 +74,61 @@ def main(deployments, mode, loglevel, test):
             else:
                 logging.error(f"Template file not found: {templatefile}")
                 continue
-            
-            # find and open sensors.txt
-            sensorsfile = os.path.join(deployment_config_root, 'sensors-test.txt')
-            if os.path.isfile(sensorsfile):
-                with open(sensorsfile, 'r') as file:
-                    sensors = file.readlines()  # Read all lines into a list
-                    sensors = [sensor.strip() for sensor in sensors]  # Strip whitespace characters like `\n` at the end of each line
+
+            # Read in the deployment specific global attributes from deployment_globalattrs.yml
+            # and update the template_data['metadata'] dictionary
+            globalattrsfile = os.path.join(deployment_config_root, 'deployment_globalattrs.yml')
+            if os.path.isfile(globalattrsfile):
+                with open(globalattrsfile, 'r') as file:
+                    try:
+                        deployment_global_attrs = yaml.safe_load(file)  # Parse the YAML file
+                        if 'metadata' in template_data.keys():
+                            template_data['metadata'].update(deployment_global_attrs)
+                        else:
+                            template_data['metadata'] = deployment_global_attrs
+                    except yaml.YAMLError as e:
+                        logging.error(f"Error reading YAML file {globalattrsfile}: {e}")
+                        continue
             else:
-                logging.error(f"sensors.txt file not found: {sensorsfile}")
+                logging.error(f"deployment_globalattrs.yml file not found: {globalattrsfile}")
                 continue
+
+            # Read in the platform metadata from platform.yml
+            template_data['platform'] = dict()
+            platformfile = os.path.join(deployment_config_root, 'platform.yml')
+            if os.path.isfile(platformfile):
+                with open(platformfile, 'r') as file:
+                    try:
+                        platform_metadata = yaml.safe_load(file)  # Parse the YAML file
+                        if 'platform' in template_data.keys():
+                            template_data['platform'].update(platform_metadata['platform'])
+                        else:
+                            template_data['platform'] = platform_metadata['platform']
+                    except yaml.YAMLError as e:
+                        logging.error(f"Error reading YAML file {platformfile}: {e}")
+                        continue
+            else:
+                logging.error(f"platform.yml file not found: {platformfile}")
+                continue
+
+            # add the platform WMO ID and deployment ID to the global attributes
+            template_data['metadata']['wmo_id'] = platform_metadata['platform']['wmo_id']
+            template_data['metadata']['wmo_platform_code'] = platform_metadata['platform']['wmo_platform_code']
+            template_data['metadata']['deployment'] = deployment
+
+            # find and open instruments.json
+            instrumentsfile = os.path.join(deployment_config_root, 'instruments.json')
+            if os.path.isfile(instrumentsfile):
+                with open(instrumentsfile, 'r') as file:
+                    instruments = json.load(file)
+            else:
+                logging.error(f"instruments.json file not found: {instrumentsfile}")
+                continue
+
+            # add all of the instruments from instruments.json to template_data['instruments']
+            template_data['instruments'] = dict()
+            for instrument in instruments:
+                template_data['instruments'][instrument['nc_var_name']] = instrument['attrs']
 
             # combine both sensor_defs.json files
             sdraw = os.path.join(deployment_config_root, 'sensor_defs-raw.json')
@@ -96,6 +140,16 @@ def main(deployments, mode, loglevel, test):
             combined_data = sdraw_data.copy()
             combined_data.update(sdprofile_data)
             
+            # find and open sensors.txt
+            sensorsfile = os.path.join(deployment_config_root, 'sensors-test.txt')
+            if os.path.isfile(sensorsfile):
+                with open(sensorsfile, 'r') as file:
+                    sensors = file.readlines()  # Read all lines into a list
+                    sensors = [sensor.strip() for sensor in sensors]  # Strip whitespace characters like `\n` at the end of each line
+            else:
+                logging.error(f"sensors.txt file not found: {sensorsfile}")
+                continue
+
             # add all of the variables from sensors.txt to template_data['netcdf_variables']
             for sensor in sensors:
                 print(sensor)
@@ -118,7 +172,7 @@ def main(deployments, mode, loglevel, test):
                         template_data['netcdf_variables'][sensor] = {}
                         template_data['netcdf_variables'][sensor]['source'] = sensor
                         logging.warning(f'No information found for {sensor} in sensor_defs-raw.json or sensor_defs-sci_profile.json')
-
+            
             # Write the final deployment.yml file
             deploymentyaml = os.path.join(deployment_config_root, 'deployment.yml')
             with open(deploymentyaml, 'w') as outfile:
@@ -133,21 +187,15 @@ def main(deployments, mode, loglevel, test):
 
 if __name__ == '__main__':
     deploy = 'ru44-20250325T0438'  #  ru44-20250306T0038 ru44-20250325T0438 ru39-20250423T1535
-    mode = 'rt'  # delayed rt
     ll = 'info'
     test = True
-    main(deploy, mode, ll, test)
+    main(deploy, ll, test)
     # arg_parser = argparse.ArgumentParser(description=main.__doc__,
     #                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     #
     # arg_parser.add_argument('deployments',
     #                         nargs='+',
     #                         help='Glider deployment name(s) formatted as glider-YYYYmmddTHHMM')
-    #
-    # arg_parser.add_argument('-m', '--mode',
-    #                         help='Deployment dataset status',
-    #                         choices=['rt', 'delayed'],
-    #                         default='rt')
     #
     # arg_parser.add_argument('-l', '--loglevel',
     #                         help='Verbosity level',
