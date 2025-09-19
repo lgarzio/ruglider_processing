@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 8/13/2025
+Last modified: lgarzio on 9/19/2025
 Convert raw DBD/EBD or SBD/TBD netCDF files from
 Slocum gliders to merged timeseries netCDF files using pyglider.
 """
@@ -11,6 +11,9 @@ import os
 import argparse
 import sys
 import glob
+import yaml
+import xarray as xr
+import numpy as np
 import pyglider.slocum as slocum
 import ruglider_processing.common as cf
 from ruglider_processing.loggers import logfile_basename, setup_logger, logfile_deploymentname
@@ -60,10 +63,18 @@ def main(deployments, mode, loglevel, test):
             if not os.path.isdir(deployment_config_root):
                 logging.warning(f'Invalid deployment config root: {deployment_config_root}')
 
-            # Find metadata files
+            # Find metadata file
             deploymentyaml = os.path.join(deployment_config_root, 'deployment.yml')
-            if not os.path.isfile(deploymentyaml):
-                logging.warning(f'Invalid deployment.yaml file: {deploymentyaml}')
+            if os.path.isfile(deploymentyaml):
+                with open(deploymentyaml, 'r') as file:
+                    try:
+                        deployment_meta = yaml.safe_load(file)  # Parse the YAML file
+                    except yaml.YAMLError as e:
+                        logging.error(f"Error reading YAML file {deploymentyaml}: {e}")
+                        continue
+            else:
+                logging.error(f"deployment.yaml file not found: {deploymentyaml}")
+                continue
             
             if mode == 'rt':
                 scisuffix = 'tbd'
@@ -99,8 +110,31 @@ def main(deployments, mode, loglevel, test):
 
             for seg in sorted(segment_list):
                 print(seg)
-                outinfo = slocum.raw_segment_to_timeseries(rawncdir, outdir, deploymentyaml, logging, profile_filt_time=profile_filter_time,
+                ds, savefile = slocum.raw_segment_to_timeseries(rawncdir, outdir, deploymentyaml, logging, profile_filt_time=profile_filter_time,
                                                            profile_min_time=60, segment=seg)
+                
+                if ds is not None:
+                    # add platform metadata variable
+                    da = xr.DataArray(np.array(np.nan), name='platform', attrs=deployment_meta['platform'])
+                    ds['platform'] = da
+                    
+                    # add instrument metadata variables
+                    for ncvar_name, attributes in deployment_meta.get('instruments', {}).items():
+                        da = xr.DataArray(np.array(np.nan), name=ncvar_name, attrs=attributes)
+                        ds[ncvar_name] = da
+                    
+                    # TODO add encoding
+                    
+                    outname = os.path.join(outdir, savefile)
+                    logging.info(f'Writing {outname}')
+                    ds.to_netcdf(
+                        outname, 'w', encoding={'time': {'units': 'seconds since 1970-01-01T00:00:00Z'}}
+                    )
+                    
+                    # for testing
+                    savefile = savefile.replace('.nc', '.csv')
+                    outcsv = os.path.join(outdir, savefile)
+                    ds.to_dataframe().to_csv(outcsv)
 
             # log how many files were successfully merged
             outputcount = len([f for f in os.listdir(outdir) if f.endswith('.nc')])
