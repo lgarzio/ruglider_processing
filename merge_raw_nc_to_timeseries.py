@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 9/19/2025
+Last modified: lgarzio on 9/24/2025
 Convert raw DBD/EBD or SBD/TBD netCDF files from
 Slocum gliders to merged timeseries netCDF files using pyglider.
 """
@@ -14,11 +14,33 @@ import glob
 import yaml
 import xarray as xr
 import numpy as np
+from netCDF4 import default_fillvals
 import pyglider.slocum as slocum
 import ruglider_processing.common as cf
 from ruglider_processing.loggers import logfile_basename, setup_logger, logfile_deploymentname
 
 
+def build_encoding(encoding_dict, ds, variable):
+    # set the fill value using netCDF4.default_fillvals
+    if variable == 'time':
+        encoding_dict[variable] = {
+            'zlib': True,
+            'complevel': 1,
+            'dtype': np.float64,
+            '_FillValue': default_fillvals['f8'],
+            'units': 'seconds since 1970-01-01T00:00:00Z',
+            'calendar': 'gregorian'
+            }
+    else:
+        encoding_type = f'{ds[variable].dtype.kind}{ds[variable].dtype.itemsize}'
+        encoding_dict[variable] = {
+            'zlib': True,
+            'complevel': 1,
+            'dtype': ds[variable].dtype,
+            '_FillValue': default_fillvals[encoding_type]
+        }
+
+    
 #def main(args):
 def main(deployments, mode, loglevel, test):
     status = 0
@@ -123,12 +145,18 @@ def main(deployments, mode, loglevel, test):
                         da = xr.DataArray(np.array(np.nan), name=ncvar_name, attrs=attributes)
                         ds[ncvar_name] = da
                     
-                    # TODO add encoding
+                    # add variable encoding
+                    encoding = dict()
+                    for v in ds.data_vars:
+                        build_encoding(encoding, ds, v)
                     
+                    for v in ds.coords:
+                        build_encoding(encoding, ds, v)
+
                     outname = os.path.join(outdir, savefile)
                     logging.info(f'Writing {outname}')
                     ds.to_netcdf(
-                        outname, 'w', encoding={'time': {'units': 'seconds since 1970-01-01T00:00:00Z'}}
+                        outname, 'w', encoding=encoding
                     )
                     
                     # for testing
