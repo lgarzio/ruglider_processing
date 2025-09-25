@@ -155,8 +155,6 @@ def main(deployments, loglevel, test):
 
             # add all of the variables from sensors.txt to template_data['netcdf_variables']
             for sensor in sensors:
-                print(sensor)
-
                 # Check if the sensor is listed as a source in netcdf_variables
                 check = is_sensor_listed_as_source(sensor, template_data)
                 if check:
