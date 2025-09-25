@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 9/24/2025
+Last modified: lgarzio on 9/25/2025
 Convert raw DBD/EBD or SBD/TBD netCDF files from
 Slocum gliders to merged timeseries netCDF files using pyglider.
 """
@@ -18,6 +18,22 @@ from netCDF4 import default_fillvals
 import pyglider.slocum as slocum
 import ruglider_processing.common as cf
 from ruglider_processing.loggers import logfile_basename, setup_logger, logfile_deploymentname
+
+
+def add_profile_vars(dataset, add_var, profile_meta, template_var='profile_id'):
+    v = np.zeros(np.shape(dataset[template_var]))
+    if np.any(dataset[template_var] != 0):
+        sourcevar = profile_meta[add_var]['source']
+        unique_ids = np.unique(dataset[template_var].values)
+        for i in unique_ids:
+            if i != 0:
+                idx = np.where(dataset[template_var] == i)[0]
+                v[idx] = np.nanmean(dataset[sourcevar].values[idx])
+    
+    da = xr.DataArray(v, coords=dataset[template_var].coords, dims=dataset[template_var].dims, 
+                      name=add_var, attrs=profile_meta[add_var])
+    
+    dataset[add_var] = da
 
 
 def build_encoding(encoding_dict, ds, variable):
@@ -39,6 +55,17 @@ def build_encoding(encoding_dict, ds, variable):
             'dtype': ds[variable].dtype,
             '_FillValue': default_fillvals[encoding_type]
         }
+
+
+def convert_to_decimal_degrees(nmea_values):
+    # convert NMEA lat/lon format (DDMM.MMMM) to decimal degrees (DD.DDDDDD)
+    # Extract degrees and minutes
+    degrees = nmea_values // 100  # Get the integer part (degrees)
+    minutes = nmea_values % 100        # Get the fractional part (minutes)
+    
+    # Convert to decimal degrees
+    decimal_degrees = degrees + (minutes / 60)
+    return decimal_degrees
 
     
 #def main(args):
@@ -136,6 +163,14 @@ def main(deployments, mode, loglevel, test):
                                                            profile_min_time=60, segment=seg)
                 
                 if ds is not None:
+                    # convert NMEA lat/lon format (DDMM.MMMM) to decimal degrees (DD.DDDDDD)
+                    ds['latitude'].values = convert_to_decimal_degrees(ds['latitude'].values)
+                    ds['longitude'].values = convert_to_decimal_degrees(ds['longitude'].values)
+
+                    # add profile_lat and profile_lon
+                    add_profile_vars(ds, 'profile_lat', deployment_meta['profile_variables'])
+                    add_profile_vars(ds, 'profile_lon', deployment_meta['profile_variables'])
+
                     # add platform metadata variable
                     da = xr.DataArray(np.array(np.nan), name='platform', attrs=deployment_meta['platform'])
                     ds['platform'] = da
