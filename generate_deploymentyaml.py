@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 9/11/2025
-Last modified: lgarzio on 9/19/2025
+Last modified: lgarzio on 10/15/2025
 Generate the deployment.yml file for a glider deployment
 Right now, just adds all of the sensors listed in sensors.txt
 to the deployment.yml file using sensor information from
@@ -75,9 +75,9 @@ def main(deployments, loglevel, test):
                 logging.error(f"Template file not found: {templatefile}")
                 continue
 
-            # Read in the deployment specific global attributes from deployment_globalattrs.yml
+            # Read in the deployment specific global attributes from deployment-globalattrs.yml
             # and update the template_data['metadata'] dictionary
-            globalattrsfile = os.path.join(deployment_config_root, 'deployment_globalattrs.yml')
+            globalattrsfile = os.path.join(deployment_config_root, 'deployment-globalattrs.yml')
             if os.path.isfile(globalattrsfile):
                 with open(globalattrsfile, 'r') as file:
                     try:
@@ -144,7 +144,7 @@ def main(deployments, loglevel, test):
             combined_data.update(sdprofile_data)
             
             # find and open sensors.txt
-            sensorsfile = os.path.join(deployment_config_root, 'sensors-test.txt')
+            sensorsfile = os.path.join(deployment_config_root, 'sensors.txt')
             if os.path.isfile(sensorsfile):
                 with open(sensorsfile, 'r') as file:
                     sensors = file.readlines()  # Read all lines into a list
