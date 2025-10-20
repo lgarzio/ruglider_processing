@@ -2,8 +2,8 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 8/6/2025
-Convert binary DBD/EBD or SBD/TBD file pairs from 
+Last modified: lgarzio on 10/20/2025
+Convert binary DBD/EBD or SBD/TBD files from 
 Slocum gliders to raw netCDF files using pyglider.
 """
 
@@ -15,17 +15,15 @@ import ruglider_processing.common as cf
 from ruglider_processing.loggers import logfile_basename, setup_logger, logfile_deploymentname
 
 
-#def main(args):
-def main(deployments, mode, loglevel, test):
-    status = 0
-
-    # loglevel = args.loglevel.upper()
-    # mode = args.mode
-    # test = args.testd
+def main(args):
+# def main(deployments, mode, loglevel, test):
+    loglevel = args.loglevel.upper()
+    mode = args.mode
+    test = args.testd
     loglevel = loglevel.upper()
 
-    logFile_base = os.path.join(os.path.expanduser('~'), 'glider_proc_log')  # for debugging
-    # logFile_base = logfile_basename()
+    # logFile_base = os.path.join(os.path.expanduser('~'), 'glider_proc_log')  # for debugging
+    logFile_base = logfile_basename()
     logging_base = setup_logger('logging_base', loglevel, logFile_base)
 
     data_home, deployments_root = cf.find_glider_deployments_rootdir(logging_base, test)
@@ -37,8 +35,8 @@ def main(deployments, mode, loglevel, test):
     
     if isinstance(deployments_root, str):
 
-        #for deployment in args.deployments:
-        for deployment in [deployments]:
+        for deployment in args.deployments:
+        # for deployment in [deployments]:
 
             # find the deployment binary data filepath
             binarydir, rawncdir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, mode)
@@ -82,7 +80,6 @@ def main(deployments, mode, loglevel, test):
                 glidersuffix = 'dbd'
             else:
                 logging.warning(f'Invalid mode provided: {mode}')
-                status = 1
                 continue
             
             logging.info(f'Processing: {deployment} {mode}')
@@ -103,38 +100,36 @@ def main(deployments, mode, loglevel, test):
             logging.info(f'Successfully converted {oscicount} of {scicount} science binary files with suffix *.{scisuffix}')
             logging.info(f'Successfully converted {oflightcount} of {flightcount} engineering binary files with suffix *.{glidersuffix}')
             logging.info(f'Finished converting binary files to raw netcdf files')
-            
-        return status
 
 
 if __name__ == '__main__':
-    deploy = 'ru39-20250423T1535'  #  ru44-20250306T0038 ru44-20250325T0438 ru39-20250423T1535
-    mode = 'rt'  # delayed rt
-    ll = 'info'
-    test = True
-    main(deploy, mode, ll, test)
-    # arg_parser = argparse.ArgumentParser(description=main.__doc__,
-    #                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    #
-    # arg_parser.add_argument('deployments',
-    #                         nargs='+',
-    #                         help='Glider deployment name(s) formatted as glider-YYYYmmddTHHMM')
-    #
-    # arg_parser.add_argument('-m', '--mode',
-    #                         help='Deployment dataset status',
-    #                         choices=['rt', 'delayed'],
-    #                         default='rt')
-    #
-    # arg_parser.add_argument('-l', '--loglevel',
-    #                         help='Verbosity level',
-    #                         type=str,
-    #                         choices=['debug', 'info', 'warning', 'error', 'critical'],
-    #                         default='info')
-    #
-    # arg_parser.add_argument('-test', '--test',
-    #                         help='Point to the environment variable key GLIDER_DATA_HOME_TEST for testing.',
-    #                         action='store_true')
-    #
-    # parsed_args = arg_parser.parse_args()
-    #
-    # sys.exit(main(parsed_args))
+    # deploy = 'ru39-20250423T1535'  #  ru44-20250306T0038 ru44-20250325T0438 ru39-20250423T1535
+    # mode = 'delayed'  # delayed rt
+    # ll = 'info'
+    # test = True
+    # main(deploy, mode, ll, test)
+    arg_parser = argparse.ArgumentParser(description=main.__doc__,
+                                         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    
+    arg_parser.add_argument('deployments',
+                            nargs='+',
+                            help='Glider deployment name(s) formatted as glider-YYYYmmddTHHMM')
+    
+    arg_parser.add_argument('-m', '--mode',
+                            help='Dataset mode: real-time (rt) or delayed-mode (delayed)',
+                            choices=['rt', 'delayed'],
+                            default='rt')
+    
+    arg_parser.add_argument('-l', '--loglevel',
+                            help='Verbosity level',
+                            type=str,
+                            choices=['debug', 'info', 'warning', 'error'],
+                            default='info')
+    
+    arg_parser.add_argument('-test', '--test',
+                            help='Point to the environment variable key GLIDER_DATA_HOME_TEST for testing.',
+                            action='store_true')
+    
+    parsed_args = arg_parser.parse_args()
+    
+    sys.exit(main(parsed_args))

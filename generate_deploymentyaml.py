@@ -2,11 +2,17 @@
 
 """
 Author: lgarzio on 9/11/2025
-Last modified: lgarzio on 10/15/2025
-Generate the deployment.yml file for a glider deployment
-Right now, just adds all of the sensors listed in sensors.txt
-to the deployment.yml file using sensor information from
-sensor_defs-raw.json and sensor_defs-sci_profile.json
+Last modified: lgarzio on 10/20/2025
+Generate the deployment.yml file for a glider deployment once files 
+have been prepped for a specific deployment.
+All files are in ../DEPLOYMENT/config/proc
+Uses the deployment-template.yml file as a template
+Adds global attributes from the deployment-globalattrs.yml file
+Adds platform-specific metadata from platform.yml
+Adds the instrument info (e.g. cal info) from instruments.json
+Adds all of the variables using sensors.txt
+Gets all of the sensor information from sensor_defs-raw.json and sensor_defs-sci_profile.json
+Writes the deployment.yml file that is used to convert raw glider data files to trajectory .nc files
 """
 
 import os
@@ -27,24 +33,22 @@ def is_sensor_listed_as_source(sensor, template_data):
     return False
 
 
-#def main(args):
-def main(deployments, loglevel, test):
-    status = 0
-
-    # loglevel = args.loglevel.upper()
-    # test = args.test
+def main(args):
+# def main(deployments, loglevel, test):
+    loglevel = args.loglevel.upper()
+    test = args.test
     loglevel = loglevel.upper()
 
-    logFile_base = os.path.join(os.path.expanduser('~'), 'glider_proc_log')  # for debugging
-    # logFile_base = logfile_basename()
+    # logFile_base = os.path.join(os.path.expanduser('~'), 'glider_proc_log')  # for debugging
+    logFile_base = logfile_basename()
     logging_base = setup_logger('logging_base', loglevel, logFile_base)
 
     data_home, deployments_root = cf.find_glider_deployments_rootdir(logging_base, test)
     
     if isinstance(deployments_root, str):
 
-        #for deployment in args.deployments:
-        for deployment in [deployments]:
+        for deployment in args.deployments:
+        # for deployment in [deployments]:
 
             # find the deployment binary data filepath
             deployment_location = cf.find_glider_deployment_location(logging_base, deployment, deployments_root)
@@ -183,31 +187,29 @@ def main(deployments, loglevel, test):
                 except yaml.YAMLError as e:
                     logging.error(f"Error writing YAML file {deploymentyaml}: {e}")
             
-        return status
-
 
 if __name__ == '__main__':
-    deploy = 'ru44-20250325T0438'  #  ru44-20250306T0038 ru44-20250325T0438 ru39-20250423T1535
-    ll = 'info'
-    test = True
-    main(deploy, ll, test)
-    # arg_parser = argparse.ArgumentParser(description=main.__doc__,
-    #                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    #
-    # arg_parser.add_argument('deployments',
-    #                         nargs='+',
-    #                         help='Glider deployment name(s) formatted as glider-YYYYmmddTHHMM')
-    #
-    # arg_parser.add_argument('-l', '--loglevel',
-    #                         help='Verbosity level',
-    #                         type=str,
-    #                         choices=['debug', 'info', 'warning', 'error', 'critical'],
-    #                         default='info')
-    #
-    # arg_parser.add_argument('-test', '--test',
-    #                         help='Point to the environment variable key GLIDER_DATA_HOME_TEST for testing.',
-    #                         action='store_true')
-    #
-    # parsed_args = arg_parser.parse_args()
-    #
-    # sys.exit(main(parsed_args))
+    # deploy = 'ru39-20250423T1535'  #  ru44-20250306T0038 ru44-20250325T0438 ru39-20250423T1535
+    # ll = 'info'
+    # test = True
+    # main(deploy, ll, test)
+    arg_parser = argparse.ArgumentParser(description=main.__doc__,
+                                         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    
+    arg_parser.add_argument('deployments',
+                            nargs='+',
+                            help='Glider deployment name(s) formatted as glider-YYYYmmddTHHMM')
+    
+    arg_parser.add_argument('-l', '--loglevel',
+                            help='Verbosity level',
+                            type=str,
+                            choices=['debug', 'info', 'warning', 'error', 'critical'],
+                            default='info')
+    
+    arg_parser.add_argument('-test', '--test',
+                            help='Point to the environment variable key GLIDER_DATA_HOME_TEST for testing.',
+                            action='store_true')
+    
+    parsed_args = arg_parser.parse_args()
+    
+    sys.exit(main(parsed_args))
