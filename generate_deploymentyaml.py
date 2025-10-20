@@ -203,7 +203,7 @@ if __name__ == '__main__':
     arg_parser.add_argument('-l', '--loglevel',
                             help='Verbosity level',
                             type=str,
-                            choices=['debug', 'info', 'warning', 'error', 'critical'],
+                            choices=['debug', 'info', 'warning', 'error'],
                             default='info')
     
     arg_parser.add_argument('-test', '--test',
