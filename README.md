@@ -57,7 +57,7 @@ Install the forked version of pyglider in the environment in editable mode (if y
     
     c. sensor_defs-sci_profile.json
 
-2. Generate the following [files](https://github.com/lgarzio/ruglider_processing/tree/master/example_config_files) based on the instruments that are installed on the glider
+2. Generate the following [files](https://github.com/lgarzio/ruglider_processing/tree/master/example_config_files) based on the instruments that are installed on the glider and put them in ../config/proc/
     
     a. instruments.json (using build_deployment_instrument_configurations.py not included in this package)
 
@@ -66,7 +66,7 @@ Install the forked version of pyglider in the environment in editable mode (if y
 3. Manually modify the [config files](https://github.com/lgarzio/ruglider_processing/tree/master/example_config_files) for the deployment and put them in ../config/proc/
     
     a. deployment-globalattrs.yml
-    
+
     b. platform.yml
 
 4. Once all of the config files are in ../config/proc/, run [generate_deploymentyaml.py](https://github.com/lgarzio/ruglider_processing/blob/master/generate_deploymentyaml.py) to create the deployment.yml file that is used to convert the raw glider data files to merged trajectory NetCDF files.
@@ -77,6 +77,6 @@ Install the forked version of pyglider in the environment in editable mode (if y
 
     `python convert_binary_to_raw_nc.py glider-YYYYmmddTHHMM -m delayed`
 
-6. Run [merge_raw_nc_to_timeseries.py](https://github.com/lgarzio/ruglider_processing/blob/master/merge_raw_nc_to_timeseries.py) to convert the raw dbd/ebd or sbd/tbd NetCDF file pairs to merged timeseries NetCDF files using a modified version of [pyglider](https://pyglider.readthedocs.io/en/latest/pyglider/pyglider.html). This generates one file per glider segment, calculates basic science variables like depth, salinity, density, indexes glider profiles, and will generate a log file in ../proc-logs/.
+6. Run [merge_raw_nc_to_timeseries.py](https://github.com/lgarzio/ruglider_processing/blob/master/merge_raw_nc_to_timeseries.py) to convert the raw dbd/ebd or sbd/tbd NetCDF file pairs to merged timeseries NetCDF files using a modified version of [pyglider](https://pyglider.readthedocs.io/en/latest/pyglider/pyglider.html). This generates one file per glider segment, calculates basic science variables (e.g. depth, salinity, density), indexes glider profiles, and will generate a log file in ../proc-logs/. Files are written to ../data/out/delayed(rt)/qc_queue/
 
     `python merge_raw_nc_to_timeseries.py glider-YYYYmmddTHHMM -m delayed`
