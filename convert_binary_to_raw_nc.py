@@ -19,7 +19,7 @@ def main(args):
 # def main(deployments, mode, loglevel, test):
     loglevel = args.loglevel.upper()
     mode = args.mode
-    test = args.testd
+    test = args.test
     loglevel = loglevel.upper()
 
     # logFile_base = os.path.join(os.path.expanduser('~'), 'glider_proc_log')  # for debugging
