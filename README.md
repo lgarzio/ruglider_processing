@@ -52,17 +52,21 @@ Install the forked version of pyglider in the environment in editable mode (if y
 1. The following template [config files](https://github.com/lgarzio/ruglider_processing/tree/master/example_config_files) don't need modification but need to be in ../config/proc/
     
     a. deployment-template.yml
+
     b. sensor_defs-raw.json
+    
     c. sensor_defs-sci_profile.json
 
 2. Generate the following [files](https://github.com/lgarzio/ruglider_processing/tree/master/example_config_files) based on the instruments that are installed on the glider
     
     a. instruments.json (using build_deployment_instrument_configurations.py not included in this package)
+
     b. sensors.txt
 
 3. Manually modify the [config files](https://github.com/lgarzio/ruglider_processing/tree/master/example_config_files) for the deployment and put them in ../config/proc/
     
     a. deployment-globalattrs.yml
+    
     b. platform.yml
 
 4. Once all of the config files are in ../config/proc/, run [generate_deploymentyaml.py](https://github.com/lgarzio/ruglider_processing/blob/master/generate_deploymentyaml.py) to create the deployment.yml file that is used to convert the raw glider data files to merged trajectory NetCDF files.
