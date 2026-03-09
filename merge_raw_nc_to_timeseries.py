@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 10/20/2025
+Last modified: lgarzio on 3/9/2026
 Convert raw DBD/EBD or SBD/TBD netCDF files from
 Slocum gliders to merged timeseries netCDF files using pyglider.
 """
@@ -49,11 +49,17 @@ def build_encoding(encoding_dict, ds, variable):
             }
     else:
         encoding_type = f'{ds[variable].dtype.kind}{ds[variable].dtype.itemsize}'
+        try:
+            fillvalue = default_fillvals[encoding_type]
+            zlib = True
+        except KeyError:
+            fillvalue = ""
+            zlib = False
         encoding_dict[variable] = {
-            'zlib': True,
+            'zlib': zlib,
             'complevel': 1,
             'dtype': ds[variable].dtype,
-            '_FillValue': default_fillvals[encoding_type]
+            '_FillValue': fillvalue
         }
 
 
@@ -156,8 +162,13 @@ def main(args):
 
             for seg in sorted(segment_list):
                 print(seg)
-                ds, savefile = slocum.raw_segment_to_timeseries(rawncdir, outdir, deploymentyaml, logging, profile_filt_time=profile_filter_time,
-                                                           profile_min_time=60, segment=seg)
+                ds, savefile, source_file = slocum.raw_segment_to_timeseries(rawncdir, 
+                                                                             outdir, 
+                                                                             deploymentyaml, 
+                                                                             logging, 
+                                                                             profile_filt_time=profile_filter_time,
+                                                                             profile_min_time=60, 
+                                                                             segment=seg)
                 
                 if ds is not None:
                     # convert NMEA lat/lon format (DDMM.MMMM) to decimal degrees (DD.DDDDDD)
@@ -167,6 +178,31 @@ def main(args):
                     # add profile_lat and profile_lon
                     add_profile_vars(ds, 'profile_lat', deployment_meta['profile_variables'])
                     add_profile_vars(ds, 'profile_lon', deployment_meta['profile_variables'])
+
+                    # add source_file variable
+                    attrs = {'comment': 'Name of the source data file: full_filename(the8x3_filename)'}
+                    v = np.zeros(np.shape(ds['time'])).astype(str)
+                    v[:] = source_file
+
+                    da = xr.DataArray(v, 
+                                      coords=ds['time'].coords, 
+                                      dims=ds['time'].dims, name='source_file', 
+                                      attrs=attrs)
+    
+                    ds['source_file'] = da
+
+                    # add trajectory variable
+                    attrs = {'comment': 'A trajectory is a single deployment of a glider and may span multiple data files.',
+                             'long_name': 'Trajectory/Deployment Name'}
+                    t = np.zeros(np.shape(ds['time'])).astype(str)
+                    t[:] = deployment
+
+                    da = xr.DataArray(t, 
+                                      coords=ds['time'].coords, 
+                                      dims=ds['time'].dims, name='trajectory', 
+                                      attrs=attrs)
+    
+                    ds['trajectory'] = da
 
                     # add platform metadata variable
                     da = xr.DataArray(np.array(np.nan), name='platform', attrs=deployment_meta['platform'])
