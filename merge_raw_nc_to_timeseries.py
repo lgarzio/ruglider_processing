@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 3/9/2026
+Last modified: lgarzio on 3/11/2026
 Convert raw DBD/EBD or SBD/TBD netCDF files from
 Slocum gliders to merged timeseries netCDF files using pyglider.
 """
@@ -93,7 +93,7 @@ def main(args):
         # for deployment in [deployments]:
 
             # find the deployment binary data filepath
-            binarydir, rawncdir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, mode)
+            rawncdir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, mode)
 
             if not os.path.isdir(rawncdir):
                 logging_base.error(f'{deployment} raw NetCDF file data directory not found')

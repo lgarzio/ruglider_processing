@@ -36,19 +36,30 @@ Install the forked version of pyglider in the environment in editable mode (if y
 
 ```bash
 ├── config
-│   ├── qc
-│   └── proc
+│   ├── proc
+│   │   ├── deployment-template.yml
+│   │   ├── sensor_defs-raw.json
+│   │   └── sensor_defs-sci_profile.json
+│   └── qc
+│       ├── qctests.yml
+│       └── time_shift.yml
 ├── data
-│   └── in 
-│       └── binary
-│           └── debd
-│           └── stbd
-│       └── rawnc
-│           └── debd
-│           └── stbd
+│   ├── in
+│   │   ├── binary
+│   │   │   ├── dbd
+│   │   │   ├── ebd
+│   │   │   ├── mbd
+│   │   │   ├── nbd
+│   │   │   ├── queue
+│   │   │   ├── sbd
+│   │   │   └── tbd
+│   │   └── rawnc
+│   │       ├── debd
+│   │       ├── mnbd
+│   │       └── stbd
 │   └── out
-│       └── delayed
-│           └── qc_queue
+│       ├── delayed
+│       │   └── qc_queue
 │       └── rt
 │           └── qc_queue
 └── proc-logs
@@ -80,7 +91,7 @@ Install the forked version of pyglider in the environment in editable mode (if y
 
     `python generate_deploymentyaml.py glider-YYYYmmddTHHMM`
 
-5. Run [convert_binary_to_raw_nc.py](https://github.com/lgarzio/ruglider_processing/blob/master/convert_binary_to_raw_nc.py) to convert realtime (-m rt) sbd/tbd binary files located in ../data/in/binary/stbd/ or delayed (-m delayed) dbd/ebd binary files located in ../data/in/binary/debd/ to raw NetCDF files (../data/in/rawnc/) using [pyglider](https://pyglider.readthedocs.io/en/latest/pyglider/pyglider.html). This will generate a log file in ../proc-logs/.
+5. Copy stbd (for rt) or debd (for delayed) binary files to ../data/in/binary/queue then run [convert_binary_to_raw_nc.py](https://github.com/lgarzio/ruglider_processing/blob/master/convert_binary_to_raw_nc.py) to convert to raw NetCDF files (../data/in/rawnc/) using [pyglider](https://pyglider.readthedocs.io/en/latest/pyglider/pyglider.html). This will generate a log file in ../proc-logs/.
 
     `python convert_binary_to_raw_nc.py glider-YYYYmmddTHHMM -m delayed`
 

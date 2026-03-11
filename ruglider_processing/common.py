@@ -28,7 +28,7 @@ def find_glider_deployment_datapath(logger, deployment, deployments_root, mode):
     :param logger: logger object
     :param deployment: glider deployment/trajectory name e.g. ru44-20250306T0038
     :param deployments_root: root directory for glider deployments
-    :return: data_path, deployment_location
+    :return: deployment_location
     """
     glider_regex = re.compile(r'^(.*)-(\d{8}T\d{4})')
     match = glider_regex.search(deployment)
@@ -40,7 +40,6 @@ def find_glider_deployment_datapath(logger, deployment, deployments_root, mode):
             except ValueError as e:
                 logger.error('Error parsing trajectory date {:s}: {:}'.format(trajectory, e))
                 trajectory_dt = None
-                data_path = None
                 deployment_location = None
 
             if trajectory_dt:
@@ -56,48 +55,34 @@ def find_glider_deployment_datapath(logger, deployment, deployments_root, mode):
                 else:
                     logger.warning('{:s} invalid mode provided: {:s}'.format(trajectory, mode))
                 if os.path.isdir(deployment_location):
-                    # Set the deployment binary data path
-                    data_path = os.path.join(deployment_location, 'data', 'in', 'binary', modemap)
-                    
                     # Set the deployment raw netcdf data path
                     nc_outpath = os.path.join(deployment_location, 'data', 'in', 'rawnc', modemap)
 
                     # Set the deployment output file directory
                     outdir = os.path.join(deployment_location, 'data', 'out', mode, 'qc_queue')
-                    
-                    if not os.path.isdir(data_path):
-                        logger.warning(f'{trajectory} data directory not found: {data_path}')
-                        data_path = None
-                        nc_outpath = None
-                        deployment_location = None
-                        outdir = None
                     if not os.path.isdir(nc_outpath):
                         logger.warning(f'{trajectory} data directory not found: {nc_outpath}')
-                        data_path = None
                         nc_outpath = None
                         deployment_location = None
                         outdir = None
                 else:
                     logger.warning(f'Deployment location does not exist: {deployment_location}')
-                    data_path = None
                     nc_outpath = None
                     deployment_location = None
                     outdir = None
 
         except ValueError as e:
             logger.error(f'Error parsing invalid deployment name {deployment}: {e}')
-            data_path = None
             nc_outpath = None
             deployment_location = None
             outdir = None
     else:
         logger.error(f'Cannot pull glider name from {deployment}')
-        data_path = None
         nc_outpath = None
         deployment_location = None
         outdir = None
 
-    return data_path, nc_outpath, outdir, deployment_location
+    return nc_outpath, outdir, deployment_location
 
 
 def find_glider_deployment_location(logger, deployment, deployments_root):

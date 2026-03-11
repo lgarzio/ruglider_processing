@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 10/20/2025
+Last modified: lgarzio on 3/11/2025
 Convert binary DBD/EBD or SBD/TBD files from 
 Slocum gliders to raw netCDF files using pyglider.
 """
@@ -38,8 +38,10 @@ def main(args):
         for deployment in args.deployments:
         # for deployment in [deployments]:
 
-            # find the deployment binary data filepath
-            binarydir, rawncdir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, mode)
+            # find the deployment data filepaths
+            rawncdir, __, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, mode)
+
+            binarydir = os.path.join(deployment_location, 'data', 'in', 'binary', 'queue')
 
             if not os.path.isdir(binarydir):
                 logging_base.error(f'{deployment} binary file data directory not found')
