@@ -227,10 +227,10 @@ def main(args):
                         outname, 'w', encoding=encoding
                     )
                     
-                    # for testing
-                    savefile = savefile.replace('.nc', '.csv')
-                    outcsv = os.path.join(outdir, savefile)
-                    ds.to_dataframe().to_csv(outcsv)
+                    # # for testing
+                    # savefile = savefile.replace('.nc', '.csv')
+                    # outcsv = os.path.join(outdir, savefile)
+                    # ds.to_dataframe().to_csv(outcsv)
 
             # log how many files were successfully merged
             outputcount = len([f for f in os.listdir(outdir) if f.endswith('.nc')])
