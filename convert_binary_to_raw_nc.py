@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 3/11/2025
+Last modified: lgarzio on 3/16/2026
 Convert binary DBD/EBD or SBD/TBD files from 
 Slocum gliders to raw netCDF files using pyglider.
 """
@@ -93,7 +93,13 @@ def main(args):
 
             # log the number of binary files to be converted
             scicount = len([f for f in os.listdir(binarydir) if f.endswith(f'.{scisuffix}')])
+            if scicount == 0:
+                scisuffix = scisuffix.upper()
+                scicount = len([f for f in os.listdir(binarydir) if f.endswith(f'.{scisuffix}')])
             flightcount = len([f for f in os.listdir(binarydir) if f.endswith(f'.{glidersuffix}')])
+            if flightcount == 0:
+                glidersuffix = glidersuffix.upper()
+                flightcount = len([f for f in os.listdir(binarydir) if f.endswith(f'.{scisuffix}')])
             slocum.binary_to_rawnc(binarydir, rawncdir, cacdir, sensorlist, deploymentyaml, incremental=True, scisuffix=scisuffix, glidersuffix=glidersuffix)
             
             # log how many files were successfully converted from binary to *.nc
