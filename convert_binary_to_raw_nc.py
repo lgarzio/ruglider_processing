@@ -106,11 +106,11 @@ def main(args):
             oscicount = len([f for f in os.listdir(rawncdir) if f.endswith(f'.{scisuffix}.nc')])
             if oscicount == 0:
                 scisuffix = scisuffix.lower()
-                scicount = len([f for f in os.listdir(binarydir) if f.endswith(f'.{scisuffix}')])
+                oscicount = len([f for f in os.listdir(rawncdir) if f.endswith(f'.{scisuffix}.nc')])
             oflightcount = len([f for f in os.listdir(rawncdir) if f.endswith(f'.{glidersuffix}.nc')])
             if oflightcount == 0:
                 glidersuffix = glidersuffix.lower()
-                flightcount = len([f for f in os.listdir(binarydir) if f.endswith(f'.{glidersuffix}')])
+                oflightcount = len([f for f in os.listdir(rawncdir) if f.endswith(f'.{glidersuffix}.nc')])
             logging.info(f'Successfully converted {oscicount} of {scicount} science binary files with suffix *.{scisuffix}')
             logging.info(f'Successfully converted {oflightcount} of {flightcount} engineering binary files with suffix *.{glidersuffix}')
             logging.info(f'Finished converting binary files to raw netcdf files')
