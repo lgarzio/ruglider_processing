@@ -226,6 +226,9 @@ def main(args):
                     ds.to_netcdf(
                         outname, 'w', encoding=encoding
                     )
+
+                    profile_count = len(np.where(np.unique(ds['profile_id']) != 0)[0])
+                    logging.info(f'Segment {seg}: indexed {profile_count} profiles')
                     
                     # # for testing
                     # savefile = savefile.replace('.nc', '.csv')
