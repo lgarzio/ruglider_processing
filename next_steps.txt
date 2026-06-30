@@ -1,0 +1,42 @@
+change the profile id from index to midpoint timestamp -  done
+make one file per segment - done. if there is no science file (ebd), profile index=0
+
+what do we do if a file only has 1 gps hit? this code doesn't interpolate and just returns zeros. 
+right now repeat the lat/lon instead of interpolate and keep track of how often it happens and how many data points/depths.
+consider combining multiple segment files into one .nc file?
+
+figure out logging - done
+test on rt data - done
+separate the two steps (binary to nc and nc to merged nc) and create separate log files - done
+
+log how many binary files are successfully converted - done
+log how many .nc files are successfully merged - done
+
+change merged .nc filename - done
+add stbd/debd to filename (depending on what's merged) - done
+
+figure out how it indexes hovering at depth
+
+don't write files that have < x data points? some rt files have like 3 data points
+
+add instrument_ variables to files - done
+
+continue working on formatting deployment.yml file - done-ish?
+
+encoding - done, Laura needs to check this
+
+convert NMEA latitude and longitude to decimal degrees - done
+
+add profile_lat and profile_lon - done
+
+depth is also interpolated, do we want that?
+
+modify QC code - done
+
+find a deployment that had several files with 0.00 fill values and run this way
+
+check/fix profile finding when floating at the surface - done
+
+fix some issues with profile finding - done (fixed with gaussian smoothing)
+    ru44_20250409T1738_20250409T1822_ru44-2025-098-0-0_stbd.nc - check this file, profile finding didn't work (rt and delayed)
+	ru44_20250416T2331_20250417T0114_ru44-2025-105-1-0_stbd.nc - check this file, profile finding didn't work (rt and delayed)
