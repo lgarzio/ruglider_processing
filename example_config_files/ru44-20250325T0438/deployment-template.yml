@@ -57,7 +57,7 @@ netcdf_variables:
     observation_type: "measured"
 
   latitude:
-    source:  m_lat
+    source:  m_gps_lat
     long_name:    latitude
     standard_name: latitude
     units:        degrees_north
@@ -71,7 +71,7 @@ netcdf_variables:
     coordinate_reference_frame:  urn:ogc:crs:EPSG::4326
 
   longitude:
-    source:  m_lon
+    source:  m_gps_lon
     long_name:    longitude
     standard_name: longitude
     units:        degrees_east

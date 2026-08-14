@@ -232,7 +232,7 @@ netcdf_variables:
     observation_type: measured
     platform: platform
     reference: WGS84
-    source: m_lat
+    source: m_gps_lat
     standard_name: latitude
     units: degrees_north
     valid_max: 90.0
@@ -245,7 +245,7 @@ netcdf_variables:
     observation_type: measured
     platform: platform
     reference: WGS84
-    source: m_lon
+    source: m_gps_lon
     standard_name: longitude
     units: degrees_east
     valid_max: 180.0
