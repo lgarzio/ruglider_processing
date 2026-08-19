@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 8/14/2026
+Last modified: lgarzio on 8/19/2026
 Convert raw DBD/EBD or SBD/TBD netCDF files from
 Slocum gliders to merged timeseries netCDF files using pyglider.
 """
@@ -61,18 +61,6 @@ def build_encoding(encoding_dict, ds, variable):
             'dtype': ds[variable].dtype,
             '_FillValue': fillvalue
         }
-
-
-def convert_to_decimal_degrees(nmea_values):
-    # convert NMEA lat/lon format (DDMM.MMMM) to decimal degrees (DD.DDDDDD)
-    magnitude = np.abs(nmea_values)
-    sign = np.sign(nmea_values)
-    degrees = np.floor(magnitude / 100)
-    minutes = magnitude - (degrees * 100)
-    
-    # Convert to decimal degrees
-    decimal_degrees = sign * (degrees + (minutes / 60))
-    return decimal_degrees
 
     
 def main(args):
@@ -172,10 +160,6 @@ def main(args):
                                                                              segment=seg)
                 
                 if ds is not None:
-                    # convert NMEA lat/lon format (DDMM.MMMM) to decimal degrees (DD.DDDDDD)
-                    ds['latitude'].values = convert_to_decimal_degrees(ds['latitude'].values)
-                    ds['longitude'].values = convert_to_decimal_degrees(ds['longitude'].values)
-
                     # add profile_lat and profile_lon
                     add_profile_vars(ds, 'profile_lat', deployment_meta['profile_variables'])
                     add_profile_vars(ds, 'profile_lon', deployment_meta['profile_variables'])
