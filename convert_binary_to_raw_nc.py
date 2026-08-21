@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 8/21/2026
+Last modified: lgarzio on 8/22/2026
 Convert binary DBD/EBD or SBD/TBD files from 
 Slocum gliders to raw netCDF files using pyglider.
 """

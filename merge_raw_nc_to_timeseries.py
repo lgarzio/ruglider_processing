@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 8/21/2026
+Last modified: lgarzio on 8/22/2026
 Convert raw DBD/EBD or SBD/TBD netCDF files from
 Slocum gliders to merged timeseries netCDF files using pyglider.
 """
