@@ -40,3 +40,6 @@ check/fix profile finding when floating at the surface - done
 fix some issues with profile finding - done (fixed with gaussian smoothing)
     ru44_20250409T1738_20250409T1822_ru44-2025-098-0-0_stbd.nc - check this file, profile finding didn't work (rt and delayed)
 	ru44_20250416T2331_20250417T0114_ru44-2025-105-1-0_stbd.nc - check this file, profile finding didn't work (rt and delayed)
+
+accurately process rt datasets and re-process when new tbd or sbd files are backfilled
+    - write shell script to copy new files that are sent from the glider to ./data/in/binary/sbd or tbd AND ./data/in/binary/queue

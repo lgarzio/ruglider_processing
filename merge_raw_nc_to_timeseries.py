@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 8/19/2026
+Last modified: lgarzio on 8/21/2026
 Convert raw DBD/EBD or SBD/TBD netCDF files from
 Slocum gliders to merged timeseries netCDF files using pyglider.
 """
@@ -83,9 +83,10 @@ def main(args):
 
             # find the deployment binary data filepath
             rawncdir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, mode)
+            queuedir = os.path.join(deployment_location, 'data', 'in', 'rawnc', 'queue')
 
-            if not os.path.isdir(rawncdir):
-                logging_base.error(f'{deployment} raw NetCDF file data directory not found')
+            if not os.path.isdir(queuedir):
+                logging_base.error(f'{deployment} queue directory containing raw NetCDF files not found')
                 continue
             
             if not os.path.isdir(outdir):
@@ -134,10 +135,10 @@ def main(args):
             
             # make timeseries netcdf file from each debd.nc/stdb.nc pair
             logging.info(f'merging *.{scisuffix}.nc and *.{glidersuffix}.nc netcdf files into timeseries netcdf files')
-            logging.info(f'Individual *.{scisuffix}.nc and *.{glidersuffix}.nc filepath: {rawncdir}')
+            logging.info(f'Individual *.{scisuffix}.nc and *.{glidersuffix}.nc filepath: {queuedir}')
             logging.info(f'Timeseries output filepath: {outdir}')
             
-            files = glob.glob(os.path.join(rawncdir, '*.nc'))
+            files = glob.glob(os.path.join(queuedir, '*.nc'))
             segment_list = []
             for file in files:
                 segment = os.path.basename(file).split('.')[0]
@@ -145,13 +146,14 @@ def main(args):
                     segment_list.append(segment)
             
             # log the number of .nc files to be merged
-            scicount = len([f for f in os.listdir(rawncdir) if f.endswith(f'.{scisuffix}.nc')])
-            flightcount = len([f for f in os.listdir(rawncdir) if f.endswith(f'.{glidersuffix}.nc')])
+            scicount = len([f for f in os.listdir(queuedir) if f.endswith(f'.{scisuffix}.nc')])
+            flightcount = len([f for f in os.listdir(queuedir) if f.endswith(f'.{glidersuffix}.nc')])
             logging.info(f'Found {scicount} *.{scisuffix}.nc (science) and {flightcount} *.{glidersuffix}.nc (flight) files to merge')
 
+            outputcount = 0
             for seg in sorted(segment_list):
                 print(seg)
-                ds, savefile, source_file = slocum.raw_segment_to_timeseries(rawncdir, 
+                ds, savefile, source_file = slocum.raw_segment_to_timeseries(queuedir, 
                                                                              outdir, 
                                                                              deploymentyaml, 
                                                                              logging, 
@@ -219,9 +221,17 @@ def main(args):
                     # savefile = savefile.replace('.nc', '.csv')
                     # outcsv = os.path.join(outdir, savefile)
                     # ds.to_dataframe().to_csv(outcsv)
+                    outputcount += 1
+
+                    # remove the segment raw netcdf files from the queue directory once they're merged
+                    queuencmatch = [
+                        filename for filename in os.listdir(queuedir)
+                        if seg in filename and filename.endswith('.nc')
+                    ]
+                    for f in queuencmatch:
+                        os.remove(os.path.join(queuedir, f))
 
             # log how many files were successfully merged
-            outputcount = len([f for f in os.listdir(outdir) if f.endswith('.nc')])
             logging.info(f'Successfully created {outputcount} merged *.nc files (out of {scicount} *.{scisuffix}.nc files and {flightcount} *.{glidersuffix}.nc files)')
 
 
