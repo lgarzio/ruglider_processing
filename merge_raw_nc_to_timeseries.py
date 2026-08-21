@@ -223,16 +223,17 @@ def main(args):
                     # ds.to_dataframe().to_csv(outcsv)
                     outputcount += 1
 
-                    # remove the segment raw netcdf files from the queue directory once they're merged
-                    queuencmatch = [
-                        filename for filename in os.listdir(queuedir)
-                        if filename in (
-                            f'{seg}.{glidersuffix}.nc',
-                            f'{seg}.{scisuffix}.nc',
-                        )
-                    ]
-                    for f in queuencmatch:
-                        os.remove(os.path.join(queuedir, f))
+                # remove the segment raw netcdf files from the queue directory
+                queuencmatch = [
+                    filename for filename in os.listdir(queuedir)
+                    if filename in (
+                        f'{seg}.{glidersuffix}.nc',
+                        f'{seg}.{scisuffix}.nc',
+                    )
+                ]
+                for f in queuencmatch:
+                    print(f'removing {f} from queue directory')
+                    os.remove(os.path.join(queuedir, f))
 
             # log how many files were successfully merged
             logging.info(f'Successfully created {outputcount} merged *.nc files (out of {scicount} *.{scisuffix}.nc files and {flightcount} *.{glidersuffix}.nc files)')
