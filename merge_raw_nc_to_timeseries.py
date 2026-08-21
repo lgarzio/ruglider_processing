@@ -226,7 +226,10 @@ def main(args):
                     # remove the segment raw netcdf files from the queue directory once they're merged
                     queuencmatch = [
                         filename for filename in os.listdir(queuedir)
-                        if seg in filename and filename.endswith('.nc')
+                        if filename in (
+                            f'{seg}.{glidersuffix}.nc',
+                            f'{seg}.{scisuffix}.nc',
+                        )
                     ]
                     for f in queuencmatch:
                         os.remove(os.path.join(queuedir, f))
