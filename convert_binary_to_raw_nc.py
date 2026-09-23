@@ -123,11 +123,11 @@ def main(args):
 
             # Files are written to ./data/in/rawnc/queue for the next step in processing
             # Copy those files to rawncdir
-            logging.info(f'Copying raw netcdf files from {outdir} to {rawncdir}')
+            logging.info(f'Copying raw netcdf files from {outdir.split(f'{deployment}')[-1]} to {rawncdir.split(f'{deployment}')[-1]}')
             for f in os.listdir(outdir):
                 if f.endswith(f'.{scisuffix}.nc') or f.endswith(f'.{glidersuffix}.nc'):
                     shutil.copy(os.path.join(outdir, f), os.path.join(rawncdir, f))
-            logging.info(f'Finished copying raw netcdf files from {outdir} to {rawncdir}')
+            logging.info(f'Finished copying raw netcdf files.')
 
             # Check the file names in ./data/in/rawnc/queue
             # If there aren't a pair of files (sbd/tbd or dbd/ebd) check the files in rawncdir 
@@ -135,7 +135,7 @@ def main(args):
             # This is necessary for the rt data processing because the binary files are processed as 
             # they are received from the glider and there may be a delay in receiving the other file type.
             if mode == 'rt':
-                logging.info(f'Checking for missing file pairs in {outdir} and copying them from {rawncdir} to {outdir}')
+                logging.info(f'Checking for missing file pairs in {outdir.split(f'{deployment}')[-1]} and copying them from {rawncdir.split(f'{deployment}')[-1]} for rt re-processing')
                 cnt = 0
                 for f in os.listdir(outdir):
                     seg = f.split('.')[0]
@@ -147,7 +147,7 @@ def main(args):
                     queued_files = set(os.listdir(outdir))
                     for rnm in rawncmatch:
                         if rnm not in queued_files:
-                            logging.info(f'Copying {rnm} from {rawncdir} to {outdir} for rt re-processing')
+                            logging.info(f'Copying {rnm} from {rawncdir.split(f'{deployment}')[-1]} to {outdir.split(f'{deployment}')[-1]} for rt re-processing')
                             shutil.copy(os.path.join(rawncdir, rnm), os.path.join(outdir, rnm))
                             cnt += 1
                 logging.info(f'Found {cnt} files to re-process in rt.')
