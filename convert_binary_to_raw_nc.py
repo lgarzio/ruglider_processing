@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 8/22/2026
+Last modified: lgarzio on 9/23/2026
 Convert binary DBD/EBD or SBD/TBD files from 
 Slocum gliders to raw netCDF files using pyglider.
 """
@@ -109,12 +109,6 @@ def main(args):
 
             slocum.binary_to_rawnc(binarydir, outdir, cacdir, sensorlist, deploymentyaml, incremental=True, scisuffix=scisuffix, glidersuffix=glidersuffix)
 
-            # Files are written to ./data/in/rawnc/queue for the next step in processing
-            # Copy those files to rawncdir
-            for f in os.listdir(outdir):
-                if f.endswith(f'.{scisuffix}.nc') or f.endswith(f'.{glidersuffix}.nc'):
-                    shutil.copy(os.path.join(outdir, f), os.path.join(rawncdir, f))
-
             # log how many files were successfully converted from binary to *.nc
             oscicount = len([f for f in os.listdir(outdir) if f.endswith(f'.{scisuffix}.nc')])
             if oscicount == 0:
@@ -127,12 +121,22 @@ def main(args):
             logging.info(f'Successfully converted {oscicount} of {scicount} science binary files with suffix *.{scisuffix}')
             logging.info(f'Successfully converted {oflightcount} of {flightcount} engineering binary files with suffix *.{glidersuffix}')
 
+            # Files are written to ./data/in/rawnc/queue for the next step in processing
+            # Copy those files to rawncdir
+            logging.info(f'Copying raw netcdf files from {outdir} to {rawncdir}')
+            for f in os.listdir(outdir):
+                if f.endswith(f'.{scisuffix}.nc') or f.endswith(f'.{glidersuffix}.nc'):
+                    shutil.copy(os.path.join(outdir, f), os.path.join(rawncdir, f))
+            logging.info(f'Finished copying raw netcdf files from {outdir} to {rawncdir}')
+
             # Check the file names in ./data/in/rawnc/queue
             # If there aren't a pair of files (sbd/tbd or dbd/ebd) check the files in rawncdir 
             # and copy them to ./data/in/rawnc/queue for the next step in processing.
             # This is necessary for the rt data processing because the binary files are processed as 
             # they are received from the glider and there may be a delay in receiving the other file type.
             if mode == 'rt':
+                logging.info(f'Checking for missing file pairs in {outdir} and copying them from {rawncdir} to {outdir}')
+                cnt = 0
                 for f in os.listdir(outdir):
                     seg = f.split('.')[0]
                     # look for this segment in rawncdir
@@ -143,8 +147,11 @@ def main(args):
                     queued_files = set(os.listdir(outdir))
                     for rnm in rawncmatch:
                         if rnm not in queued_files:
+                            logging.info(f'Copying {rnm} from {rawncdir} to {outdir} for rt re-processing')
                             shutil.copy(os.path.join(rawncdir, rnm), os.path.join(outdir, rnm))
-                
+                            cnt += 1
+                logging.info(f'Found {cnt} files to re-process in rt.')
+
             # once all binary files have been processed, remove the files from ./data/in/binary/queue
             for f in os.listdir(binarydir):
                 if f.endswith(f'.{scisuffix}') or f.endswith(f'.{glidersuffix}'):
