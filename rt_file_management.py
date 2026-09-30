@@ -5,7 +5,7 @@ Author: lgarzio on 9/21/2026
 Last modified: lgarzio on 9/30/2026
 Check realtime merged netCDF file names to determine if there are duplicates.
 This can happen when a just a flight file is processed then a science file is transferred later
-and the pair is re-processed.  This script will check for duplicate files and remove the older file.
+and the pair is re-processed.  This script will check for duplicate files and remove the *sbd.nc file.
 """
 
 import os
@@ -44,7 +44,7 @@ def main(args):
                 logging_base.error(f'{deployment} deployment proc-logs directory not found')
                 continue
 
-            logfilename = logfile_deploymentname(deployment, mode, 'rt_file_management')
+            logfilename = logfile_deploymentname(deployment, 'rt_file_management')
             logFile = os.path.join(deployment_location, 'proc-logs', logfilename)
             logging = setup_logger('logging', loglevel, logFile)
                 
