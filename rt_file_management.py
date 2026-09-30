@@ -2,8 +2,10 @@
 
 """
 Author: lgarzio on 9/21/2026
-Last modified: lgarzio on 9/21/2026
-Check realtime merged netCDF file names to determine if they need to be re-merged
+Last modified: lgarzio on 9/30/2026
+Check realtime merged netCDF file names to determine if there are duplicates.
+This can happen when a just a flight file is processed then a science file is transferred later
+and the pair is re-processed.  This script will check for duplicate files and remove the older file.
 """
 
 import os
@@ -33,11 +35,6 @@ def main(args):
             # find the deployment binary data filepath
             rawncdir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, mode)
             outdir = os.path.dirname(outdir)
-            raw_queuedir = os.path.join(deployment_location, 'data', 'in', 'rawnc', 'queue')
-
-            if not os.path.isdir(raw_queuedir):
-                logging_base.error(f'{deployment} queue directory containing raw NetCDF files not found')
-                continue
             
             if not os.path.isdir(outdir):
                 logging_base.error(f'{deployment} output file data directory not found')
@@ -51,29 +48,26 @@ def main(args):
             logFile = os.path.join(deployment_location, 'proc-logs', logfilename)
             logging = setup_logger('logging', loglevel, logFile)
                 
-            logging.info(f'Checking {deployment} {mode} to determine if files need to be re-merged')
+            logging.info(f'Checking {deployment} {mode} for duplicate trajectory files in {outdir}')
             
             # Find files that only have the flight suffix
-            files = glob.glob(os.path.join(outdir, '*_sbd.nc'))
+            files = sorted(glob.glob(os.path.join(outdir, '*_sbd.nc')))
 
-            # Figure out of the corresponding science files exist for each flight file
-            file_pairs = 0
+            # Figure out if there is a corresponding *_stbd.nc file, meaning the tbd file was
+            # transferred from the glider after the sbd file was processed.  If so, delete the older
+            # sbd file that doesn't contain the science data. The newer stbd file should contain the science data.
+            files_removed = 0
             for f in files:
-                segment = os.path.basename(f).split('_')[0]
-                flight_file = f'{segment}.tbd.nc'
-                raw_flight_file = os.path.join(rawncdir, flight_file)
-                if os.path.isfile(raw_flight_file):
-                    # If the corresponding science file exists, copy both files to the queue directory to
-                    # be re-merged
-                    science_file = f'{segment}.sbd.nc'
-                    raw_science_file = os.path.join(rawncdir, science_file)
-                    logging.info(f'Copying {flight_file} and {science_file} to queue for re-merging')
-                    shutil.copy(raw_flight_file, os.path.join(raw_queuedir, flight_file))
-                    shutil.copy(raw_science_file, os.path.join(raw_queuedir, science_file))
-                    file_pairs += 1
+                stbd_file = f.replace('_sbd.nc', '_stbd.nc')
+                if os.path.isfile(stbd_file):
+                    # If the corresponding stbd.nc file exists, delete the older sbd.nc file
+                    fname = os.path.basename(f)
+                    logging.info(f'Deleting {fname} and keeping associated *stbd.nc file')
+                    os.remove(f)
+                    files_removed += 1
 
-             # log how many files were successfully merged
-            logging.info(f'Copied {file_pairs} file pairs to the {raw_queuedir} for re-merging')
+             # log how many files were deleted
+            logging.info(f'Deleted {files_removed} *_sbd.nc files')
 
 
 if __name__ == '__main__':
