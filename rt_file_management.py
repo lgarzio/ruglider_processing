@@ -12,7 +12,6 @@ import os
 import argparse
 import sys
 import glob
-import shutil
 import ruglider_processing.common as cf
 from ruglider_processing.loggers import logfile_basename, setup_logger, logfile_deploymentname
 
@@ -22,6 +21,7 @@ def main(args):
     mode = args.mode
     test = args.test
     loglevel = loglevel.upper()
+    #loglevel = loglevel.upper()
 
     logFile_base = logfile_basename()
     logging_base = setup_logger('logging_base', loglevel, logFile_base)
@@ -34,7 +34,11 @@ def main(args):
 
             # find the deployment binary data filepath
             rawncdir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, mode)
-            outdir = os.path.dirname(outdir)
+            try:
+                outdir = os.path.dirname(outdir)
+            except TypeError:
+                logging_base.error(f'Could not find the output directory for {deployment} {mode}')
+                continue
             
             if not os.path.isdir(outdir):
                 logging_base.error(f'{deployment} output file data directory not found')
