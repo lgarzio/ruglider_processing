@@ -158,7 +158,7 @@ def main(args):
                                                                              deploymentyaml, 
                                                                              logging, 
                                                                              profile_filt_time=profile_filter_time,
-                                                                             profile_min_time=60, 
+                                                                             profile_min_time=180, 
                                                                              segment=seg)
                 
                 if ds is not None:
