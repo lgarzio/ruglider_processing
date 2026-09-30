@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 9/23/2026
+Last modified: lgarzio on 9/30/2026
 Convert binary DBD/EBD or SBD/TBD files from 
 Slocum gliders to raw netCDF files using pyglider.
 """
@@ -155,6 +155,8 @@ def main(args):
             # once all binary files have been processed, remove the files from ./data/in/binary/queue
             for f in os.listdir(binarydir):
                 if f.endswith(f'.{scisuffix}') or f.endswith(f'.{glidersuffix}'):
+                    os.remove(os.path.join(binarydir, f))
+                elif f.endswith(f'.{scisuffix.upper()}') or f.endswith(f'.{glidersuffix.upper()}'):
                     os.remove(os.path.join(binarydir, f))
 
             logging.info(f'Finished converting binary files to raw netcdf files')
