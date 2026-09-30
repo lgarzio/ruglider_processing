@@ -44,7 +44,7 @@ def main(args):
                 logging_base.error(f'{deployment} deployment proc-logs directory not found')
                 continue
 
-            logfilename = logfile_deploymentname(deployment, 'rt_file_management')
+            logfilename = logfile_deploymentname(deployment, mode, 'file_management')
             logFile = os.path.join(deployment_location, 'proc-logs', logfilename)
             logging = setup_logger('logging', loglevel, logFile)
                 
