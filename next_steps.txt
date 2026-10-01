@@ -41,5 +41,24 @@ fix some issues with profile finding - done (fixed with gaussian smoothing)
     ru44_20250409T1738_20250409T1822_ru44-2025-098-0-0_stbd.nc - check this file, profile finding didn't work (rt and delayed)
 	ru44_20250416T2331_20250417T0114_ru44-2025-105-1-0_stbd.nc - check this file, profile finding didn't work (rt and delayed)
 
-accurately process rt datasets and re-process when new tbd or sbd files are backfilled
-    - write shell script to copy new files that are sent from the glider to ./data/in/binary/sbd or tbd AND ./data/in/binary/queue
+accurately process rt datasets and re-process when new tbd or sbd files are backfilled - done
+
+rename files to remove timestamps - done
+
+clear out binary/queue if the file extensions are caps .EBD .DBD - ru30 - done
+
+delete duplicated files in /data/out/rt when they're re-processed in rt an the filename changes from .sbd.nc to .stbd.nc - done
+
+check hovering - maybe fixed
+    ru32-20250716T1541 starting around 2025-07-22 02:00
+    ru33-20250903T1642 starting around 2025-09-06 04:00 also 2025-09-19 04:00
+
+check missing data in new processing vs old
+    ru44-20250325T0438-delayed 2025-04-07 16:00 to 2025-04-07 21:00
+    ru44-20250311T0126-delayed 2025-03-21 01:00 to 2025-03-21 04:00
+
+figure out how to make sensors.txt for rt datasets
+
+process ngdac files
+
+add thermal lag QC
