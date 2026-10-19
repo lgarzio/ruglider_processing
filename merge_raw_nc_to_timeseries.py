@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 8/22/2026
+Last modified: lgarzio on 10/19/2026
 Convert raw DBD/EBD or SBD/TBD netCDF files from
 Slocum gliders to merged timeseries netCDF files using pyglider.
 """
@@ -82,7 +82,7 @@ def main(args):
         # for deployment in [deployments]:
 
             # find the deployment binary data filepath
-            rawncdir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, mode)
+            rawncdir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, processing_type, mode)
             queuedir = os.path.join(deployment_location, 'data', 'in', 'rawnc', 'queue')
 
             if not os.path.isdir(queuedir):
@@ -251,6 +251,11 @@ if __name__ == '__main__':
     arg_parser.add_argument('deployments',
                             nargs='+',
                             help='Glider deployment name(s) formatted as glider-YYYYmmddTHHMM')
+    
+    arg_parser.add_argument('-p', '--processing_type',
+                            help='Generate files to send to the RU server or NGDAC server',
+                            choices=['ru', 'ngdac'],
+                            default='ru')
     
     arg_parser.add_argument('-m', '--mode',
                             help='Dataset mode: real-time (rt) or delayed-mode (delayed)',

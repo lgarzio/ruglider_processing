@@ -22,12 +22,14 @@ def convert_epoch_ts(data):
     return time
 
 
-def find_glider_deployment_datapath(logger, deployment, deployments_root, mode):
+def find_glider_deployment_datapath(logger, deployment, deployments_root, processing_type, mode):
     """
     Find the glider deployment binary data path
     :param logger: logger object
     :param deployment: glider deployment/trajectory name e.g. ru44-20250306T0038
     :param deployments_root: root directory for glider deployments
+    :param processing_type: type of processing to perform (ngdac or ru)
+    :param mode: mode of operation (rt or delayed)
     :return: deployment_location
     """
     glider_regex = re.compile(r'^(.*)-(\d{8}T\d{4})')
@@ -54,12 +56,16 @@ def find_glider_deployment_datapath(logger, deployment, deployments_root, mode):
                     modemap = 'stbd'
                 else:
                     logger.warning('{:s} invalid mode provided: {:s}'.format(trajectory, mode))
+
+                if processing_type not in ['ngdac', 'ru']:
+                    logger.warning('{:s} invalid processing type provided: {:s}'.format(trajectory, processing_type))
+
                 if os.path.isdir(deployment_location):
                     # Set the deployment raw netcdf data path
-                    nc_outpath = os.path.join(deployment_location, 'data', 'in', 'rawnc', modemap)
+                    nc_outpath = os.path.join(deployment_location, 'data', 'in', 'rawnc',  modemap)
 
                     # Set the deployment output file directory
-                    outdir = os.path.join(deployment_location, 'data', 'out', mode, 'qc_queue')
+                    outdir = os.path.join(deployment_location, 'data', 'out', processing_type, mode, 'qc_queue')
                     if not os.path.isdir(nc_outpath):
                         logger.warning(f'{trajectory} data directory not found: {nc_outpath}')
                         nc_outpath = None
