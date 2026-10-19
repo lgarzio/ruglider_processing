@@ -64,8 +64,9 @@ def build_encoding(encoding_dict, ds, variable):
 
     
 def main(args):
-# def main(deployments, mode, loglevel, test):
+#def main(deployments, processing_type, mode, loglevel, test):
     loglevel = args.loglevel.upper()
+    processing_type = args.processing_type
     mode = args.mode
     test = args.test
     loglevel = loglevel.upper()
@@ -82,7 +83,7 @@ def main(args):
         # for deployment in [deployments]:
 
             # find the deployment binary data filepath
-            rawncdir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, processing_type, mode)
+            rawncdir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, mode, processing_type)
             queuedir = os.path.join(deployment_location, 'data', 'in', 'rawnc', 'queue')
 
             if not os.path.isdir(queuedir):
@@ -97,7 +98,7 @@ def main(args):
                 logging_base.error(f'{deployment} deployment proc-logs directory not found')
                 continue
 
-            logfilename = logfile_deploymentname(deployment, mode, 'proc_merge_nc_to_timeseries')
+            logfilename = logfile_deploymentname(deployment, mode, 'proc_merge_nc_to_timeseries', processing_type)
             logFile = os.path.join(deployment_location, 'proc-logs', logfilename)
             logging = setup_logger('logging', loglevel, logFile)
 

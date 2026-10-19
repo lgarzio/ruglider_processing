@@ -11,9 +11,12 @@ def logfile_basename():
     return f'/home/glideradm/logs/{user}-glider_qc.log'
 
 
-def logfile_deploymentname(deployment, mode, fname):
+def logfile_deploymentname(deployment, mode, fname, processing_type=None):
     user = pwd.getpwuid(os.getuid())[0]
-    logfilename = f'{user}-{datetime.now().strftime('%Y%m%d')}-{deployment}-{mode}-{fname}.log'
+    if processing_type is None:
+        logfilename = f'{user}-{datetime.now().strftime("%Y%m%d")}-{deployment}-{mode}-{fname}.log'
+    else:
+        logfilename = f'{user}-{datetime.now().strftime("%Y%m%d")}-{deployment}-{processing_type}-{mode}-{fname}.log'
 
     return logfilename
 

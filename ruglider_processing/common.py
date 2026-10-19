@@ -22,7 +22,7 @@ def convert_epoch_ts(data):
     return time
 
 
-def find_glider_deployment_datapath(logger, deployment, deployments_root, processing_type, mode):
+def find_glider_deployment_datapath(logger, deployment, deployments_root, mode, processing_type=None):
     """
     Find the glider deployment binary data path
     :param logger: logger object
@@ -57,7 +57,7 @@ def find_glider_deployment_datapath(logger, deployment, deployments_root, proces
                 else:
                     logger.warning('{:s} invalid mode provided: {:s}'.format(trajectory, mode))
 
-                if processing_type not in ['ngdac', 'ru']:
+                if processing_type is not None and processing_type not in ['ngdac', 'ru']:
                     logger.warning('{:s} invalid processing type provided: {:s}'.format(trajectory, processing_type))
 
                 if os.path.isdir(deployment_location):
@@ -65,7 +65,10 @@ def find_glider_deployment_datapath(logger, deployment, deployments_root, proces
                     nc_outpath = os.path.join(deployment_location, 'data', 'in', 'rawnc',  modemap)
 
                     # Set the deployment output file directory
-                    outdir = os.path.join(deployment_location, 'data', 'out', processing_type, mode, 'qc_queue')
+                    if processing_type is not None:
+                        outdir = os.path.join(deployment_location, 'data', 'out', processing_type, mode, 'qc_queue')
+                    else:
+                        outdir = os.path.join(deployment_location, 'data', 'out', mode, 'qc_queue')
                     if not os.path.isdir(nc_outpath):
                         logger.warning(f'{trajectory} data directory not found: {nc_outpath}')
                         nc_outpath = None
