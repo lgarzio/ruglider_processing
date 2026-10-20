@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 10/19/2026
+Last modified: lgarzio on 10/20/2026
 Convert raw DBD/EBD or SBD/TBD netCDF files from
 Slocum gliders to merged timeseries netCDF files using pyglider.
 """
@@ -84,7 +84,10 @@ def main(args):
 
             # find the deployment binary data filepath
             rawncdir, outdir, deployment_location = cf.find_glider_deployment_datapath(logging_base, deployment, deployments_root, mode, processing_type)
-            queuedir = os.path.join(deployment_location, 'data', 'in', 'rawnc', 'queue')
+            if processing_type == 'ru':
+                queuedir = os.path.join(deployment_location, 'data', 'in', 'rawnc', 'queue')
+            elif processing_type == 'ngdac':
+                queuedir = os.path.join(deployment_location, 'data', 'in', 'rawnc', 'queue_ngdac')
 
             if not os.path.isdir(queuedir):
                 logging_base.error(f'{deployment} queue directory containing raw NetCDF files not found')
@@ -132,7 +135,7 @@ def main(args):
                 logging.warning(f'Invalid mode provided: {mode}')
                 continue
             
-            logging.info(f'Processing: {deployment} {mode}')
+            logging.info(f'Processing: {deployment} {processing_type} {mode}')
             
             # make timeseries netcdf file from each debd.nc/stdb.nc pair
             logging.info(f'merging *.{scisuffix}.nc and *.{glidersuffix}.nc netcdf files into timeseries netcdf files')
@@ -200,6 +203,22 @@ def main(args):
                     for ncvar_name, attributes in deployment_meta.get('instruments', {}).items():
                         da = xr.DataArray(np.array(np.nan), name=ncvar_name, attrs=attributes)
                         ds[ncvar_name] = da
+                    
+                    # rename some ngdac variables
+                    if processing_type == 'ngdac':
+                        rename_yaml = os.path.join(deployment_config_root, 'ngdac_rename.yml')
+                        if os.path.isfile(rename_yaml):
+                            with open(rename_yaml, 'r') as file:
+                                try:
+                                    rename_dict = yaml.safe_load(file)  # Parse the YAML file
+                                except yaml.YAMLError as e:
+                                    logging.error(f"Error reading YAML file {rename_yaml}: {e}")
+                                    continue
+                        else:
+                            logging.error(f"ngdac_rename.yml file not found: {rename_yaml}")
+                            continue
+
+                        ds = ds.rename(rename_dict)
                     
                     # add variable encoding
                     encoding = dict()

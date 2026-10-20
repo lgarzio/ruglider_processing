@@ -2,7 +2,7 @@
 
 """
 Author: lgarzio on 5/14/2025
-Last modified: lgarzio on 9/30/2026
+Last modified: lgarzio on 10/19/2026
 Convert binary DBD/EBD or SBD/TBD files from 
 Slocum gliders to raw netCDF files using pyglider.
 """
@@ -44,6 +44,7 @@ def main(args):
 
             binarydir = os.path.join(deployment_location, 'data', 'in', 'binary', 'queue')
             outdir = os.path.join(deployment_location, 'data', 'in', 'rawnc', 'queue')
+            outdir_ngdac = os.path.join(deployment_location, 'data', 'in', 'rawnc', 'queue_ngdac')
 
             if not os.path.isdir(binarydir):
                 logging_base.error(f'{deployment} binary file data directory not found')
@@ -55,6 +56,10 @@ def main(args):
 
             if not os.path.isdir(outdir):
                 logging_base.error(f'{deployment} raw NetCDF output file data directory not found')
+                continue
+
+            if not os.path.isdir(outdir_ngdac):
+                logging_base.error(f'{deployment} raw NetCDF ngdac output file data directory not found')
                 continue
 
             if not os.path.isdir(os.path.join(deployment_location, 'proc-logs')):
@@ -122,7 +127,14 @@ def main(args):
             logging.info(f'Successfully converted {oflightcount} of {flightcount} engineering binary files with suffix *.{glidersuffix}')
 
             # Files are written to ./data/in/rawnc/queue for the next step in processing
-            # Copy those files to rawncdir
+            # Copy the files to ./data/in/rawnc/queue_ngdac for the next step in processing for the ngdac files
+            logging.info(f'Copying raw netcdf files from {outdir.split(f'{deployment}')[-1]} to {outdir_ngdac.split(f'{deployment}')[-1]}')
+            for f in os.listdir(outdir):
+                if f.endswith(f'.{scisuffix}.nc') or f.endswith(f'.{glidersuffix}.nc'):
+                    shutil.copy(os.path.join(outdir, f), os.path.join(outdir_ngdac, f))
+            logging.info(f'Finished copying raw netcdf files.')
+
+            # Also copy the files to rawncdir as the archive
             logging.info(f'Copying raw netcdf files from {outdir.split(f'{deployment}')[-1]} to {rawncdir.split(f'{deployment}')[-1]}')
             for f in os.listdir(outdir):
                 if f.endswith(f'.{scisuffix}.nc') or f.endswith(f'.{glidersuffix}.nc'):

@@ -38,6 +38,7 @@ Install the forked version of pyglider in the environment in editable mode (if y
 ├── config
 │   ├── proc
 │   │   ├── deployment-template.yml
+│   │   ├── ngdac_rename.yml
 │   │   ├── sensor_defs-raw.json
 │   │   └── sensor_defs-sci_profile.json
 │   └── qc
@@ -57,6 +58,7 @@ Install the forked version of pyglider in the environment in editable mode (if y
 │   │       ├── debd
 │   │       ├── mnbd
 │   │       ├── queue
+│   │       ├── queue_ngdac
 │   │       └── stbd
 │   └── out
 │       ├── ngdac
