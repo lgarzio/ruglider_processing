@@ -142,7 +142,7 @@ def main(args):
             logging.info(f'Finished copying raw netcdf files.')
 
             # Check the file names in ./data/in/rawnc/queue
-            # If there aren't a pair of files (sbd/tbd or dbd/ebd) check the files in rawncdir 
+            # If there aren't a pair of files (sbd and tbd for the same segment), check the files in rawncdir ./data/in/rawnc/stbd
             # and copy them to ./data/in/rawnc/queue for the next step in processing.
             # This is necessary for the rt data processing because the binary files are processed as 
             # they are received from the glider and there may be a delay in receiving the other file type.
