@@ -76,21 +76,23 @@ Install the forked version of pyglider in the environment in editable mode (if y
 
 ### Usage
 
-1. The following template [config files](https://github.com/lgarzio/ruglider_processing/tree/master/example_config_files) don't need modification but need to be in ../config/proc/
+1. The following template [config files](https://github.com/lgarzio/ruglider_processing/tree/master/example_config_files/templates/) don't need modification but need to be in ../config/proc/
     
     a. deployment-template.yml
 
-    b. sensor_defs-raw.json
-    
-    c. sensor_defs-sci_profile.json
+    b. ngdac_rename.yml
 
-2. Generate the following [files](https://github.com/lgarzio/ruglider_processing/tree/master/example_config_files) based on the instruments that are installed on the glider and put them in ../config/proc/
+    c. sensor_defs-raw.json
+    
+    d. sensor_defs-sci_profile.json
+
+2. Generate the following files (examples [here](https://github.com/lgarzio/ruglider_processing/tree/master/example_config_files/ru44-20250325T0438)) based on the instruments that are installed on the glider and put them in ../config/proc/
     
     a. instruments.json (using build_deployment_instrument_configurations.py not included in this package)
 
     b. sensors.txt
 
-3. Manually modify the [config files](https://github.com/lgarzio/ruglider_processing/tree/master/example_config_files) for the deployment and put them in ../config/proc/
+3. Manually modify the following config files (examples [here](https://github.com/lgarzio/ruglider_processing/tree/master/example_config_files/ru44-20250325T0438)) for the deployment and put them in ../config/proc/
     
     a. deployment-globalattrs.yml
 
